@@ -1,10 +1,14 @@
 //Cargamos el módulo express
 var express = require('express');
+var cors = require('cors')
 var app = express();
+
 var bp = require('body-parser');
+app.use(cors());
 app.use(bp.urlencoded({
     extended: true
 }));
+app.use(bp.json());
 var knex = require('knex')({
     client: 'mysql',
     connection: {
@@ -32,8 +36,10 @@ app.get('/users/:id',users.getUser)
 
 app.post('/login',auth.login)
 
+app.post('/registro',auth.registrar)
+
 app.get('/users/:id/ofertas',ofertas.getOfertas)
 
-app.listen(process.env.PORT || 3000, function () {
-    console.log("El servidor express está en el puerto 3000");
+app.listen(process.env.PORT || 3030, function () {
+    console.log("El servidor express está en el puerto 3030");
 });
