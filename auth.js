@@ -27,22 +27,32 @@ exports.login = function (req, res) {
     if (email != "" && pass != "") {
 
         if (isProfesional) {
-            knex('profesionales').where('email', email).where('password', pass).count('id as c').then(function (total) {
+            knex('profesionales').where('email', email).where('password', pass).count('email as c').then(function (total) {
                 if (total[0].c == 1) {
-                    res.status(200).send({
-                        "mensaje": "login ok"
+                    knex('profesionales').where('email', email).first().then(function (query) {
+                        res.status(200).send({
+                            "idUser": query.id,
+                            "nombre": query.nombre,
+                            "mensaje": "login ok"
+                        })
                     })
+                    
                 } else {
+                    
                     res.status(401).send({
                         "mensaje": "login bad"
                     })
                 }
             })
         } else {
-            knex('users').where('email', email).where('password', pass).count('id as c').then(function (total) {
+            knex('users').where('email', email).where('password', pass).count('email as c').then(function (total) {
                 if (total[0].c == 1) {
-                    res.status(200).send({
-                        "mensaje": "login ok"
+                    knex('users').where('email', email).first().then(function (query) {
+                        res.status(200).send({
+                            "idUser": query.id,
+                            "nombre": query.nombre,
+                            "mensaje": "login ok"
+                        })
                     })
                 } else {
                     res.status(401).send({
@@ -121,7 +131,7 @@ exports.registrar = function (req, res) {
             }
             
         } else {
-            res.status(401).send({ userMessage: "Usuario existente, prueba con otro nick", devMessage: "" })
+            res.status(401).send({ userMessage: "Usuario existente, prueba con otro email", devMessage: "" })
         }
     })
 }
