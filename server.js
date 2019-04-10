@@ -22,16 +22,6 @@ var users = require('./users.js')
 var auth = require('./auth.js')
 var ofertas = require('./ofertas.js')
 
-app.get('/',function(pet,res){
-
-    knex.select('*').from('users').then(function(data){
-        res.status(200).send({
-            "mensaje": data
-        }) 
-    })
-    
-})
-
 app.get('/users/:id',users.getUser)
 
 app.post('/login',auth.login)
