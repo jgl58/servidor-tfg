@@ -23,7 +23,7 @@ var auth = require('./auth.js')
 var ofertas = require('./ofertas.js')
 
 app.get('/users/:id',users.getUser)
-
+app.put('/users/:id',users.updateUser)
 app.post('/login',auth.login)
 
 app.post('/registro',auth.registrar)

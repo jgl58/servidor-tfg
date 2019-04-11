@@ -18,7 +18,7 @@ var knex = require('knex')({
 exports.getOfertas = function(pet,res){
 
     var id = pet.params.id
-    knex('ofertas').where('user_id',id).then(function(data){
+    knex('ofertas').innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').where('ofertas_usuarios.user_id',id).then(function(data){
         
         res.status(200).send({
             "ofertas": data
