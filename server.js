@@ -29,6 +29,7 @@ app.post('/login',auth.login)
 app.post('/registro',auth.registrar)
 
 app.get('/users/:id/ofertas',ofertas.getOfertas)
+app.get('/users/:id/ofertas/:idOferta',ofertas.getOferta)
 app.post('/users/:id/ofertas',ofertas.createOferta)
 app.listen(process.env.PORT || 3030, function () {
     console.log("El servidor express está en el puerto 3030");

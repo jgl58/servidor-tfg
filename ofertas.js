@@ -18,8 +18,8 @@ var knex = require('knex')({
 exports.getOfertas = function(pet,res){
 
     var id = pet.params.id
-    knex('ofertas').innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').where('ofertas_usuarios.user_id',id).then(function(data){
-        
+    knex('ofertas').select('ofertas.*').innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').where('ofertas_usuarios.user_id',id).then(function(data){
+        console.log(data)
         res.status(200).send({
             "ofertas": data
         }) 
@@ -27,6 +27,19 @@ exports.getOfertas = function(pet,res){
         res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
     });
 }
+
+exports.getOferta = function(pet,res){
+
+    var id = pet.params.idOferta
+    knex('ofertas').where('id',id).first().then(function(data){      
+        res.status(200).send({
+            "oferta": data
+        }) 
+    }).catch((error) => {
+        res.status(404).send({userMessage: "Oferta no existente", devMessage: ""})
+    });
+}
+
 
 exports.createOferta = function (req, res) {
 
