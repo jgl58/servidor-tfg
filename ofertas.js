@@ -27,3 +27,21 @@ exports.getOfertas = function(pet,res){
         res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
     });
 }
+
+exports.createOferta = function (req, res) {
+
+    var oferta = req.body
+    knex('ofertas').insert([
+        { titulo: oferta.titulo, descripcion: oferta.descripcion}
+    ]).then(function (id) {
+        knex('ofertas_usuarios').insert([
+            { oferta_id:id, user_id: req.params.id}
+        ]).then(function (id) {
+            res.sendStatus(201);
+        }).catch(function(error){
+            res.sendStatus(401);
+        })
+    }).catch(function(error){
+        res.sendStatus(401);
+    })
+}
