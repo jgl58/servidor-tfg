@@ -19,7 +19,7 @@ exports.getOfertas = function(pet,res){
 
     var id = pet.params.id
     knex('ofertas').select('ofertas.*').innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').where('ofertas_usuarios.user_id',id).then(function(data){
-        console.log(data)
+        
         res.status(200).send({
             "ofertas": data
         }) 
@@ -27,6 +27,21 @@ exports.getOfertas = function(pet,res){
         res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
     });
 }
+
+
+exports.getProfesionalOferta = function(pet,res){
+
+    var id = pet.params.idOferta
+    knex('ofertas_usuarios').first('profesionales.*').innerJoin('profesionales','ofertas_usuarios.profesional_id','=','profesionales.id').where('ofertas_usuarios.oferta_id',id).then(function(data){
+        
+        res.status(200).send({
+            "profesional": data
+        }) 
+    }).catch((error) => {
+        res.status(404).send({userMessage: "Profesional no existente", devMessage: ""})
+    });
+}
+
 
 exports.getOferta = function(pet,res){
 
