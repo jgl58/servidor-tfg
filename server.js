@@ -22,6 +22,8 @@ var users = require('./users.js')
 var auth = require('./auth.js')
 var ofertas = require('./ofertas.js')
 
+app.get('/profesionales/:id',users.getProfesional)
+app.put('/profesionales/:id',users.updateProfesional)
 app.get('/users/:id',users.getUser)
 app.put('/users/:id',users.updateUser)
 app.post('/login',auth.login)
