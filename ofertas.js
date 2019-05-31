@@ -13,12 +13,13 @@ var knex = require('knex')({
     }
 });
 
-
-
 exports.getOfertas = function(pet,res){
 
     var id = pet.params.id
-    knex('ofertas').select('ofertas.*').innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').where('ofertas_usuarios.user_id',id).then(function(data){
+    knex('ofertas').select('ofertas.*').
+    innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').
+    where('ofertas_usuarios.user_id',id)
+    .then(function(data){
         
         res.status(200).send({
             "ofertas": data
@@ -27,6 +28,38 @@ exports.getOfertas = function(pet,res){
         res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
     });
 }
+
+exports.getTrabajosProvincia = function(pet,res){
+
+    var id = pet.params.id
+    knex('ofertas').select('ofertas.*').
+    innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').
+    where('ofertas_usuarios.profesional_id',id).
+    where('ofertas.provincia',pet.params.provincia)
+    .then(function(data){
+        
+        res.status(200).send({
+            "ofertas": data
+        }) 
+    }).catch((error) => {
+        res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
+    });
+}
+
+exports.getTrabajos = function(pet,res){
+
+    var id = pet.params.id
+    knex('ofertas').select('ofertas.*').innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').where('ofertas_usuarios.profesional_id',id).then(function(data){
+        
+        res.status(200).send({
+            "ofertas": data
+        }) 
+    }).catch((error) => {
+        res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
+    });
+}
+
+
 
 
 exports.getProfesionalOferta = function(pet,res){
@@ -59,17 +92,20 @@ exports.getOferta = function(pet,res){
 exports.createOferta = function (req, res) {
 
     var oferta = req.body
+    console.log(oferta)
     knex('ofertas').insert([
-        { titulo: oferta.titulo, descripcion: oferta.descripcion}
+        { titulo: oferta.titulo, user_id:req.params.id, descripcion: oferta.descripcion, provincia: oferta.provincia, estado: false}
     ]).then(function (id) {
         knex('ofertas_usuarios').insert([
             { oferta_id:id, user_id: req.params.id}
         ]).then(function (id) {
             res.sendStatus(201);
         }).catch(function(error){
+            
             res.sendStatus(401);
         })
     }).catch(function(error){
+        
         res.sendStatus(401);
     })
 }

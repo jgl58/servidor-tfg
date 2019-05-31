@@ -41,6 +41,19 @@ exports.getProfesional = function (pet, res) {
 
 }
 
+exports.getHistorialProfesionales = function(pet,res){
+
+    var id = pet.params.id
+    knex('profesionales').distinct('profesionales.*').innerJoin('ofertas_usuarios','ofertas_usuarios.profesional_id','=','profesionales.id').where('ofertas_usuarios.user_id',id).then(function(data){
+        
+        res.status(200).send({
+            "profesionales": data
+        }) 
+    }).catch((error) => {
+        res.status(404).send({userMessage: "Profesional no existente", devMessage: ""})
+    });
+}
+
 exports.updateUser = function (req, res) {
 
     var user = req.body

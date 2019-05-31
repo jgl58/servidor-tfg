@@ -32,6 +32,7 @@ exports.login = function (req, res) {
                         res.status(200).send({
                             "idUser": query.id,
                             "nombre": query.nombre,
+                            "provincia": query.provincia,
                             "mensaje": "login ok"
                         })
                     })
@@ -50,6 +51,7 @@ exports.login = function (req, res) {
                         res.status(200).send({
                             "idUser": query.id,
                             "nombre": query.nombre,
+                            "provincia": query.provincia,
                             "mensaje": "login ok"
                         })
                     })
