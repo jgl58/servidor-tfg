@@ -1,5 +1,7 @@
 var express = require('express');
 var cors = require('cors')
+var jwt = require('jwt-simple');
+var secret = '123456'
 var app = express();
 var bp = require('body-parser');
 app.use(cors());
@@ -11,7 +13,7 @@ app.use(bp.json());
 var knex = require('knex')({
     client: 'mysql',
     connection: {
-        host: '127.0.0.1',
+        host: '0.0.0.0',
         user: 'root',
         database: 'tfg'
     }
@@ -29,7 +31,16 @@ exports.login = function (req, res) {
             knex('profesionales').where('email', email).where('password', pass).count('email as c').then(function (total) {
                 if (total[0].c == 1) {
                     knex('profesionales').where('email', email).first().then(function (query) {
+
+                        var payload = {
+                            idUser: query.id,
+                            nick: query.nombre,
+                            provincia: query.provincia
+                        } 
+                        var token = jwt.encode(payload,secret);
+                        res.setHeader('Authorization','Bearer',token);
                         res.status(200).send({
+                            "token": token,
                             "idUser": query.id,
                             "nombre": query.nombre,
                             "provincia": query.provincia,
@@ -48,7 +59,15 @@ exports.login = function (req, res) {
             knex('users').where('email', email).where('password', pass).count('email as c').then(function (total) {
                 if (total[0].c == 1) {
                     knex('users').where('email', email).first().then(function (query) {
+                        var payload = {
+                            idUser: query.id,
+                            nick: query.nombre,
+                            provincia: query.provincia
+                        } 
+                        var token = jwt.encode(payload,secret);
+                        res.setHeader('Authorization','Bearer',token);
                         res.status(200).send({
+                            "token": token,
                             "idUser": query.id,
                             "nombre": query.nombre,
                             "provincia": query.provincia,
