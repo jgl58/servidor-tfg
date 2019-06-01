@@ -24,6 +24,7 @@ var ofertas = require('./ofertas.js')
 
 app.get('/profesionales/:id',users.getProfesional)
 app.put('/profesionales/:id',users.updateProfesional)
+app.get('/profesionales/:id/clientes',users.getHistorialClientes)
 app.get('/profesional/:id/trabajos',ofertas.getTrabajos)
 app.get('/users/:id',users.getUser)
 app.put('/users/:id',users.updateUser)
@@ -33,6 +34,7 @@ app.post('/registro',auth.registrar)
 
 app.get('/users/:id/ofertas',ofertas.getOfertas)
 app.get('/users/:id/profesionales',users.getHistorialProfesionales)
+
 app.get('/users/:id/ofertas/:idOferta',ofertas.getOferta)
 app.post('/users/:id/ofertas',ofertas.createOferta)
 app.get('/users/:id/ofertas/:idOferta/user',ofertas.getClienteTrabajo)

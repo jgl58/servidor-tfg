@@ -68,6 +68,25 @@ exports.getHistorialProfesionales = function(pet,res){
                 "profesionales": data
             }) 
         }).catch((error) => {
+            res.status(404).send({userMessage: "Cliente no existente", devMessage: ""})
+        });
+    }
+}
+
+exports.getHistorialClientes = function(pet,res){
+
+    var id = pet.params.id
+    var token = pet.headers.authorization;
+   //console.log("Token: "+token)
+    if(!token){
+        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
+    }else{
+        knex('users').distinct('users.*').innerJoin('ofertas_usuarios','ofertas_usuarios.user_id','=','users.id').where('ofertas_usuarios.profesional_id',id).then(function(data){
+            
+            res.status(200).send({
+                "clientes": data
+            }) 
+        }).catch((error) => {
             res.status(404).send({userMessage: "Profesional no existente", devMessage: ""})
         });
     }
