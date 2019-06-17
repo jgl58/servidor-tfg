@@ -118,6 +118,10 @@ exports.registrar = function (req, res) {
     var pass = req.body.pass;
     var nombre = req.body.nombre;
     var apellidos = req.body.apellidos;
+    var poblacion = req.body.poblacion;
+    var provincia = req.body.provincia;
+    var direccion = req.body.direccion;
+    var pais = req.body.pais;
     console.log(req.body)
     existe(isProfesional, email, function (exists) {
         //console.log(exists)
@@ -126,13 +130,18 @@ exports.registrar = function (req, res) {
                 email: email,
                 pass: pass,
                 nombre: nombre,
-                apellidos: apellidos
+                apellidos: apellidos,
+                poblacion: poblacion,
+                provincia: provincia,
+                direccion: direccion,
+                pais: pais
             }
 
             if(isProfesional){
                 console.log("Registrando profesional")
                 knex('profesionales').insert([
-                    { email: data.email, password: data.pass, nombre: nombre, apellidos: apellidos }
+                    { email: data.email, password: data.pass, nombre: data.nombre, apellidos: data.apellidos, poblacion: data.poblacion, provincia: data.provincia,
+                        direccion: data.direccion, pais: data.pais }
                 ]).then(function (f) {
                     knex('profesionales').where('email', data.email).first().then(function (query) {
                         res.sendStatus(201);
@@ -142,7 +151,8 @@ exports.registrar = function (req, res) {
             else{
                 console.log("Registrando cliente")
                 knex('users').insert([
-                    { email: data.email, password: data.pass, nombre: nombre, apellidos: apellidos }
+                    { email: data.email, password: data.pass, nombre: data.nombre, apellidos: data.apellidos, poblacion: data.poblacion, provincia: data.provincia,
+                        direccion: data.direccion, pais: data.pais }
                 ]).then(function (f) {
                     knex('users').where('email', data.email).first().then(function (query) {
                         res.sendStatus(201);
