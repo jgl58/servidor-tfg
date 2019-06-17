@@ -39,6 +39,10 @@ app.get('/users/:id/ofertas/:idOferta',ofertas.getOferta)
 app.post('/users/:id/ofertas',ofertas.createOferta)
 app.get('/users/:id/ofertas/:idOferta/user',ofertas.getClienteTrabajo)
 app.get('/users/:id/ofertas/:idOferta/profesional',ofertas.getProfesionalOferta)
+
+
+app.get('/provincias',users.getProvincias)
+
 app.listen(3030, function () {
     console.log("El servidor express está en el puerto 3030"); 
 });
