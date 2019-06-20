@@ -138,14 +138,12 @@ exports.getOferta = function(pet,res){
 
 
 exports.createOferta = function (req, res) {
-
-    var oferta = req.body
-    console.log(oferta)
     var token = req.headers.authorization;
-   //console.log("Token: "+token)
+    var oferta = req.body
     if(!token){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
+        
         knex('ofertas').insert([
             { titulo: oferta.titulo, user_id:req.params.id, descripcion: oferta.descripcion, provincia: oferta.provincia, estado: false}
         ]).then(function (id) {
@@ -154,7 +152,6 @@ exports.createOferta = function (req, res) {
             ]).then(function (id) {
                 res.sendStatus(201);
             }).catch(function(error){
-                
                 res.sendStatus(401);
             })
         }).catch(function(error){
