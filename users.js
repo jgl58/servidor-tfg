@@ -1,15 +1,18 @@
 var express = require('express');
 var app = express();
+var cors = require('cors')
 var bp = require('body-parser');
 var jwt = require('jwt-simple');
 var secret = '123456'
+app.use(cors());
 app.use(bp.urlencoded({
     extended: true
 }));
+app.use(bp.json());
 var knex = require('knex')({
     client: 'mysql',
     connection: {
-        host: '127.0.0.1',
+        host: 'localhost',
         user: 'root',
         database: 'tfg'
     }
@@ -99,56 +102,57 @@ exports.updateUser = function (req, res) {
     if(!token){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
-        var user = req.body
-        console.log(user)
-        console.log(user.id)
-        knex('users')
-            .where('id', user.id)
-            .update({
-                email: user.email,
-                nombre: user.nombre,
-                apellidos: user.apellidos,
-                direccion: user.direccion,
-                poblacion: user.poblacion,
-                provincia: user.provincia,
-                pais: user.pais,
-                telefono: user.telefono
-            }).then(function (count) {
-                //console.log(count)
-                res.sendStatus(204)
-            }).catch(function (err) {
-                res.status(404).send({ userMessage: "El Usuario no existe", devMessage: "" })
-            });
+        var id = req.params.id
+        var user = req.body;
+        knex('users').where({id}).update({
+            email: user.email,
+            nombre: user.nombre,
+            apellidos: user.apellidos,
+            direccion: user.direccion,
+            poblacion: user.poblacion,
+            provincia: parseInt(user.provincia),
+            pais: user.pais,
+            telefono: user.telefono
+        }).then(function (count) {
+            console.log(count)
+            res.sendStatus(204)
+        }).catch(function (err) {
+            res.status(404).send({ userMessage: "El usuario no existe", devMessage: "" })
+        });
+        
+        
     }
 }
 
 exports.updateProfesional = function (req, res) {
 
-    var user = req.body
-    console.log(user)
-    console.log(user.id)
+  
     var token = req.headers.authorization;
    //console.log("Token: "+token)
     if(!token){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
+        var user = req.body;
+        var id = req.params.id
         knex('profesionales')
-            .where('id', user.id)
-            .update({
-                email: user.email,
-                nombre: user.nombre,
-                apellidos: user.apellidos,
-                direccion: user.direccion,
-                poblacion: user.poblacion,
-                provincia: user.provincia,
-                pais: user.pais,
-                telefono: user.telefono
-            }).then(function (count) {
-                //console.log(count)
-                res.sendStatus(204)
-            }).catch(function (err) {
-                res.status(404).send({ userMessage: "El Usuario no existe", devMessage: "" })
-            });
+        .where({id})
+        .update({email: user.email,
+            nombre: user.nombre,
+            apellidos: user.apellidos,
+            direccion: user.direccion,
+            poblacion: user.poblacion,
+            provincia: parseInt(user.provincia),
+            pais: user.pais,
+            telefono: user.telefono
+        })
+        .then(function (count) {
+            //console.log(count)
+
+            res.sendStatus(204)
+        }).catch(function (err) {
+            res.status(404).send({ userMessage: "El profesional no existe", devMessage: "" })
+        });
+
     }
 }
 
@@ -159,12 +163,32 @@ exports.getProvincias = function (pet, res) {
     if(!token){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
-        knex('provincias').select('provincias.*').then(function (data) {
+        knex('provincias').select('provincias.*').orderBy('provincia').then(function (data) {
             res.status(200).send({
                 "provincias": data
             })
         }).catch((error) => {
             res.status(404).send({ userMessage: "Provincias no existentes", devMessage: "" })
+        });
+    }
+
+}
+
+exports.getProvincia = function (pet, res) {
+
+    var token = pet.headers.authorization;
+    var id = pet.params.id;
+
+   
+    if(!token){
+        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
+    }else{
+        knex('provincias').select('provincias.*').where('id',id).first().then(function (data) {
+            res.status(200).send({
+                "provincia": data
+            })
+        }).catch((error) => {
+            res.status(404).send({ userMessage: "Provincia no existente", devMessage: "" })
         });
     }
 
