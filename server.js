@@ -21,6 +21,7 @@ var knex = require('knex')({
 var users = require('./users.js')
 var auth = require('./auth.js')
 var ofertas = require('./ofertas.js')
+var buscador = require('./buscador.js')
 
 app.get('/profesionales/:id',users.getProfesional)
 app.put('/profesionales/:id',users.updateProfesional)
@@ -43,6 +44,9 @@ app.get('/users/:id/ofertas/:idOferta/profesional',ofertas.getProfesionalOferta)
 
 app.get('/provincias',users.getProvincias)
 app.get('/provincias/:id',users.getProvincia)
+
+
+app.get('/buscador/:idProvincia',buscador.getOfertasProvincias)
 
 app.listen(3030, function () {
     console.log("El servidor express está en el puerto 3030"); 
