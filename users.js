@@ -14,6 +14,7 @@ var knex = require('knex')({
     connection: {
         host: 'localhost',
         user: 'root',
+        password: "root",
         database: 'tfg'
     }
 });

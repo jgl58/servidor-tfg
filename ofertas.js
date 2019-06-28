@@ -9,6 +9,7 @@ var knex = require('knex')({
     connection: {
       host : '0.0.0.0',
       user : 'root',
+      password: "root",
       database : 'tfg'
     }
 });
