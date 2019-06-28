@@ -140,12 +140,13 @@ exports.getOferta = function(pet,res){
 exports.createOferta = function (req, res) {
     var token = req.headers.authorization;
     var oferta = req.body
+    console.log(oferta)
     if(!token){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
         
         knex('ofertas').insert([
-            { titulo: oferta.titulo, user_id:req.params.id, descripcion: oferta.descripcion, provincia: oferta.provincia, estado: false}
+            { titulo: oferta.titulo, descripcion: oferta.descripcion, provincia_id: oferta.provincia, estado: false}
         ]).then(function (id) {
             knex('ofertas_usuarios').insert([
                 { oferta_id:id, user_id: req.params.id}
