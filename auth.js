@@ -13,9 +13,9 @@ app.use(bp.json());
 var knex = require('knex')({
     client: 'mysql',
     connection: {
-        host: '0.0.0.0',
-        user: 'root',
-        password: "root",
+        host: 'localhost',
+        user: 'tfg',
+        password: "tfg",
         database: 'tfg'
     }
 });
@@ -26,6 +26,7 @@ exports.login = function (req, res) {
     var isProfesional = req.body.profesional
     var email = req.body.email;
     var pass = req.body.pass;
+    console.log("Login")
     if (email != "" && pass != "") {
 
         if (isProfesional) {

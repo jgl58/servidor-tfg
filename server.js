@@ -12,9 +12,9 @@ app.use(bp.json());
 var knex = require('knex')({
     client: 'mysql',
     connection: {
-      host : '0.0.0.0',
-      user : 'root',
-      password: "root",
+      host : 'localhost',
+      user : 'tfg',
+      password: "tfg",
       database : 'tfg'
     }
   });
@@ -28,6 +28,7 @@ app.get('/profesionales/:id',users.getProfesional)
 app.put('/profesionales/:id',users.updateProfesional)
 app.get('/profesionales/:id/clientes',users.getHistorialClientes)
 app.get('/profesional/:id/trabajos',ofertas.getTrabajos)
+app.put('/profesional/:id/trabajos/:idTrabajo',ofertas.aceptarOferta)
 app.get('/users/:id',users.getUser)
 app.put('/users/:id',users.updateUser)
 app.post('/login',auth.login)

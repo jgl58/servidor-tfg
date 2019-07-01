@@ -7,9 +7,9 @@ app.use(bp.urlencoded({
 var knex = require('knex')({
     client: 'mysql',
     connection: {
-      host : '0.0.0.0',
-      user : 'root',
-      password: "root",
+        host: 'localhost',
+      user : 'tfg',
+      password: "tfg",
       database : 'tfg'
     }
 });
@@ -75,6 +75,46 @@ exports.getTrabajos = function(pet,res){
         }).catch((error) => {
             res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
         });
+    }
+}
+
+exports.aceptarOferta = function(req,res){
+
+    var id = req.params.id
+    var idTrabajo = req.params.idTrabajo;
+    var token = req.headers.authorization;
+
+    console.log("Id: "+id + " idTrabajo:"+idTrabajo)
+    if(!token){
+        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
+    }else{
+
+
+        knex('ofertas_usuarios')
+        .where('id',idTrabajo)
+        .update({
+            profesional_id: id
+        }).then(function (count) {
+            console.log(count)
+           knex('ofertas').where("id",idTrabajo).update({
+                estado: true
+            }).then(function (count) {
+
+                if(count>0){
+                    res.sendStatus(204)
+                }else{
+                    res.sendStatus(404)
+                }
+            }).catch(function (err) {
+                res.status(404).send({ userMessage: "La oferta no existe", devMessage: "" })
+            });
+            
+        }).catch(function (err) {
+            res.status(404).send({ userMessage: "El profesional no existe", devMessage: "" })
+        });
+        
+        
+        
     }
 }
 
@@ -150,7 +190,7 @@ exports.createOferta = function (req, res) {
             { titulo: oferta.titulo, descripcion: oferta.descripcion, provincia_id: oferta.provincia, estado: false}
         ]).then(function (id) {
             knex('ofertas_usuarios').insert([
-                { oferta_id:id, user_id: req.params.id}
+                {id: id, oferta_id:id, user_id: req.params.id, profesional_id: 0}
             ]).then(function (id) {
                 res.sendStatus(201);
             }).catch(function(error){
