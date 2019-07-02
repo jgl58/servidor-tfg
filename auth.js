@@ -13,7 +13,7 @@ app.use(bp.json());
 var knex = require('knex')({
     client: 'mysql',
     connection: {
-        host: 'localhost',
+        host: '0.0.0.0',
         user: 'tfg',
         password: "tfg",
         database: 'tfg'

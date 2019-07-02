@@ -135,6 +135,7 @@ exports.updateProfesional = function (req, res) {
     }else{
         var user = req.body;
         var id = req.params.id
+        console.log(user)
         knex('profesionales')
         .where({id})
         .update({email: user.email,

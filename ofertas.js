@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var bp = require('body-parser');
+var horario = require('./horario')
 app.use(bp.urlencoded({
     extended: true
 }));
@@ -78,43 +79,59 @@ exports.getTrabajos = function(pet,res){
     }
 }
 
+
+
+
+function actualizarOfertasUsuario(idTrabajo,id,fecha,callback){
+    knex('ofertas_usuarios')
+    .where('id',idTrabajo)
+    .update({
+        profesional_id: id
+    }).then(function (count) {
+       knex('ofertas').where("id",idTrabajo).update({
+            estado: true
+        }).then(function (count) {
+            horario.insertarHorario(id,fecha,idTrabajo,(insertado) => {
+                console.log("HOLA")
+                if(insertado){
+                    callback(true)
+                }else{
+                    callback(false)
+                }
+            })
+        })                    
+    }).catch(function (err) {
+        callback(false)
+    });
+}
+
 exports.aceptarOferta = function(req,res){
 
     var id = req.params.id
     var idTrabajo = req.params.idTrabajo;
     var token = req.headers.authorization;
 
-    console.log("Id: "+id + " idTrabajo:"+idTrabajo)
+    
     if(!token){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
-
-
-        knex('ofertas_usuarios')
-        .where('id',idTrabajo)
-        .update({
-            profesional_id: id
-        }).then(function (count) {
-            console.log(count)
-           knex('ofertas').where("id",idTrabajo).update({
-                estado: true
-            }).then(function (count) {
-
-                if(count>0){
-                    res.sendStatus(204)
-                }else{
-                    res.sendStatus(404)
-                }
-            }).catch(function (err) {
-                res.status(404).send({ userMessage: "La oferta no existe", devMessage: "" })
-            });
-            
+        knex('ofertas').where('id',idTrabajo).first()
+        .then(function(data){
+             horario.comprobarHorario(id,data.fecha,(disponible) => {
+                if(disponible == true){ 
+                    actualizarOfertasUsuario(idTrabajo,id,data.fecha,(actualizado)=>{
+                        if(actualizado == true){
+                            res.sendStatus(204)
+                        }else{
+                            res.status(404).send({ userMessage: "Problema al aceptar", devMessage: "" })
+                        }
+                    })
+                 }
+             })
+             
         }).catch(function (err) {
-            res.status(404).send({ userMessage: "El profesional no existe", devMessage: "" })
+            res.status(404).send({ userMessage: "El trabajo no existe", devMessage: "" })
         });
-        
-        
-        
     }
 }
 
@@ -181,13 +198,11 @@ exports.getOferta = function(pet,res){
 exports.createOferta = function (req, res) {
     var token = req.headers.authorization;
     var oferta = req.body
-    console.log(oferta)
     if(!token){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
-        
         knex('ofertas').insert([
-            { titulo: oferta.titulo, descripcion: oferta.descripcion, provincia_id: oferta.provincia, estado: false}
+            { titulo: oferta.titulo, descripcion: oferta.descripcion, provincia_id: oferta.provincia, estado: false, fecha: oferta.fecha, duracion: oferta.duracion}
         ]).then(function (id) {
             knex('ofertas_usuarios').insert([
                 {id: id, oferta_id:id, user_id: req.params.id, profesional_id: 0}
