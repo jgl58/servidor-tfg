@@ -117,7 +117,9 @@ exports.aceptarOferta = function(req,res){
     }else{
         knex('ofertas').where('id',idTrabajo).first()
         .then(function(data){
+            console.log(data)
              horario.comprobarHorario(id,data.fecha,(disponible) => {
+                console.log(disponible)
                 if(disponible == true){ 
                     actualizarOfertasUsuario(idTrabajo,id,data.fecha,(actualizado)=>{
                         if(actualizado == true){
@@ -126,7 +128,9 @@ exports.aceptarOferta = function(req,res){
                             res.status(404).send({ userMessage: "Problema al aceptar", devMessage: "" })
                         }
                     })
-                 }
+                }else{
+                    res.sendStatus(406)
+                }
              })
              
         }).catch(function (err) {
@@ -204,10 +208,13 @@ exports.createOferta = function (req, res) {
         knex('ofertas').insert([
             { titulo: oferta.titulo, descripcion: oferta.descripcion, provincia_id: oferta.provincia, estado: false, fecha: oferta.fecha, duracion: oferta.duracion}
         ]).then(function (id) {
+            var idOferta = id;
             knex('ofertas_usuarios').insert([
                 {id: id, oferta_id:id, user_id: req.params.id, profesional_id: 0}
             ]).then(function (id) {
                 res.sendStatus(201);
+                autoseleccionar(idOferta)
+                //aqui hay que llamar al autoseleccionar
             }).catch(function(error){
                 res.sendStatus(401);
             })
@@ -216,4 +223,48 @@ exports.createOferta = function (req, res) {
             res.sendStatus(401);
         })
     }
+}
+
+
+function autoseleccionar (id){
+    
+    knex('ofertas').where('id',id).first().then(function(oferta){      
+
+       knex('profesionales').where('provincia',oferta.provincia_id).then(function(profesionales){   
+            console.log(profesionales)
+            if(profesionales.length == 1){
+                horario.comprobarHorario(profesionales[0].id,oferta.fecha, function(libre){
+                    if(libre == true){
+                        notificar(profesionales[0].id,id)
+                        console.log("Solo hay uno")
+                    }
+                })           
+            }else if(profesionales.length > 1){
+                var disponibles = []
+                console.log("Filtrando profesionales disponibles")
+
+                for(let j=0; j<profesionales.length;j++){
+                    horario.comprobarHorario(profesionales[j].id,oferta.fecha, function(libre){
+                        if(libre == true){
+                            disponibles.push(profesionales[j])
+                        }
+                    })
+                }
+                 
+                console.log("Hay mas de uno")
+                console.log(disponibles)
+            }else{
+                console.log("No hay usuarios")
+            }
+        }).catch((error) => {
+            res.status(404).send({userMessage: "Oferta no existente", devMessage: ""})
+        });
+
+    }).catch((error) => {
+    });
+    
+}
+
+function notificar(idUsuario, idOferta){
+
 }

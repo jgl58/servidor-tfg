@@ -35,8 +35,4 @@ exports.getOfertasProvincias = function(pet,res){
     }
 }
 
-exports.autoseleccion = function(oferta){
-
-    
-}
 

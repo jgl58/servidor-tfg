@@ -47,16 +47,30 @@ exports.insertarHorario = function(profesional,dia,trabajo,callback){
 exports.comprobarHorario = function(id,fecha,callback){
     console.log(id+" "+fecha)
     knex('horario').where('profesional',id).then(function(data){
-        console.log(data)
         if(data.length == 0){
             callback(true)
         }else{
-            data.forEach(element => {
-                if(element.dia == fecha){ 
-                    callback(false)
+            var disponible = true
+            for(let i=0;i<data.length;i++){
+                if(compararFechas(data[i].dia,fecha)){ 
+                    disponible =false
+                    break
                 }
-            });
-        }        
-        callback(true)
+            }
+
+            callback(disponible)
+        }      
+        
     })
+}
+
+function compararFechas(fecha1,fecha2){
+    var d1 = new Date(fecha1)
+    var d2 = new Date(fecha2)
+    if(d1.getHours() == d2.getHours() && d1.getMinutes() == d2.getMinutes()){
+        console.log("Ya existe una fecha en el horario")
+        return true
+    }else{
+        return false
+    }
 }
