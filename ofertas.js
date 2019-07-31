@@ -573,7 +573,7 @@ function notificar(idUsuario, idOferta){
                                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                       <tbody>
                                         <tr>
-                                          <td> <a href="" target="_blank">Call To Action</a> </td>
+                                          <td> <a href="http://localhost:3000/aceptar?id=`+profesional.id+`&of=`+oferta.id+`" target="_blank">Call To Action</a> </td>
                                         </tr>
                                       </tbody>
                                     </table>
