@@ -33,6 +33,9 @@ app.put('/profesional/:id/trabajos/:idTrabajo',ofertas.aceptarOferta)
 app.get('/profesionales/:id/horario',horario.getHorario)
 app.get('/users/:id',users.getUser)
 app.put('/users/:id',users.updateUser)
+
+app.get('/ofertas/:id',ofertas.getOfertaSola)
+
 app.post('/login',auth.login)
 
 app.post('/registro',auth.registrar)

@@ -38,6 +38,27 @@ exports.getOfertas = function(pet,res){
     }
 }
 
+exports.getOfertaSola = function(pet,res){
+
+  var id = pet.params.id
+ // var token = pet.headers.authorization;
+ //console.log("Token: "+token)
+  /*if(!token){
+      res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
+  }else{*/
+      knex('ofertas').select('ofertas.*').
+      where('id',id).first()
+      .then(function(data){
+          
+          res.status(200).send({
+              "oferta": data
+          }) 
+      }).catch((error) => {
+          res.status(404).send({userMessage: "Oferta no existente", devMessage: ""})
+      });
+  //}
+}
+
 exports.getTrabajosProvincia = function(pet,res){
 
     var id = pet.params.id
@@ -272,8 +293,8 @@ function notificar(idUsuario, idOferta){
     
 
 
-    knex('profesionales','provincias.provincia').innerJoin('provincias','provincias.id','=','profesionales.provincia').where('profesionales.id', idUsuario).first().then(function (profesional) {
-
+    knex('profesionales','provincias.provincia').innerJoin('provincias','provincias.id','=','profesionales.provincia').where('profesionales.id', idUsuario).first("profesionales.*").then(function (profesional) {
+        console.log(profesional)
         knex('ofertas').where('id',idOferta).first().then(function(oferta){  
             var html = `<!doctype html>
     <html>
@@ -628,7 +649,6 @@ function notificar(idUsuario, idOferta){
                 subject: 'Notificiación de oferta asignada',
                 html: html
             };
-            console.log(mailOptions)
             transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
                     console.log(error);
