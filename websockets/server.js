@@ -17,6 +17,16 @@ io.on('connect', function (client) {
         //io.sockets.in(d.room).emit('mensajeRecibir',d)
         client.broadcast.to(d.room).emit('mensaje',d);
     })
+
+    client.on('notificaciones',function(d){
+        console.log("Enviando notificacion")
+        console.log("notficacion a profesional"+d.profesional_id)
+        
+        client.broadcast.to("profesional"+d.profesional_id).emit('n',d);
+        
+
+
+    })
     client.on('disconnect', function(){})
 });
 

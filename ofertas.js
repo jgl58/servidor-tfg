@@ -3,6 +3,7 @@ var app = express();
 var bp = require('body-parser');
 var horario = require('./horario')
 var nodemailer = require('nodemailer');
+var notificacion = require('./notificaciones')
 app.use(bp.urlencoded({
     extended: true
 }));
@@ -649,6 +650,8 @@ function notificar(idUsuario, idOferta){
                 subject: 'Notificiación de oferta asignada',
                 html: html
             };
+            notificacion.notificar(profesional.id,"oferta",oferta.id)
+
             transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
                     console.log(error);
