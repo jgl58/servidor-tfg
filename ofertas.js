@@ -211,7 +211,18 @@ exports.getOferta = function(pet,res){
     if(!token){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
-        knex('ofertas').where('id',id).first().then(function(data){      
+      /*  knex('ofertas').where('id',id).first().then(function(data){      
+            res.status(200).send({
+                "oferta": data
+            }) 
+        }).catch((error) => {
+            res.status(404).send({userMessage: "Oferta no existente", devMessage: ""})
+        });*/
+        knex('ofertas').first('ofertas.*','ofertas_usuarios.user_id').
+        innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').
+        where('ofertas.id',id)
+        .then(function(data){
+            
             res.status(200).send({
                 "oferta": data
             }) 
@@ -246,6 +257,31 @@ exports.createOferta = function (req, res) {
             res.sendStatus(401);
         })
     }
+}
+
+exports.updateOferta = function (req, res) {
+
+  var token = req.headers.authorization;
+ //console.log("Token: "+token)
+  if(!token){
+      res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
+  }else{
+      var id = req.params.idOferta
+      var oferta = req.body;
+      console.log(oferta)
+      knex('ofertas').where({id}).update({ 
+        titulo: oferta.titulo, 
+        descripcion: oferta.descripcion, 
+        provincia_id: oferta.provincia
+      }).then(function (count) {
+          console.log(count)
+          res.sendStatus(204)
+      }).catch(function (err) {
+          res.status(404).send({ userMessage: "La oferta no existe", devMessage: "" })
+      });
+      
+      
+  }
 }
 
 

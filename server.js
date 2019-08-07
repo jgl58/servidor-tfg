@@ -46,6 +46,7 @@ app.get('/users/:id/ofertas',ofertas.getOfertas)
 app.get('/users/:id/profesionales',users.getHistorialProfesionales)
 
 app.get('/users/:id/ofertas/:idOferta',ofertas.getOferta)
+app.put('/users/:id/ofertas/:idOferta',ofertas.updateOferta)
 app.post('/users/:id/ofertas',ofertas.createOferta)
 app.get('/users/:id/ofertas/:idOferta/user',ofertas.getClienteTrabajo)
 app.get('/users/:id/ofertas/:idOferta/profesional',ofertas.getProfesionalOferta)
