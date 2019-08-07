@@ -278,9 +278,26 @@ exports.updateOferta = function (req, res) {
           res.sendStatus(204)
       }).catch(function (err) {
           res.status(404).send({ userMessage: "La oferta no existe", devMessage: "" })
-      });
-      
-      
+      });    
+  }
+}
+
+exports.borrarOferta = function (req, res) {
+
+  var token = req.headers.authorization;
+ //console.log("Token: "+token)
+  if(!token){
+      res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
+  }else{
+      var id = req.params.idOferta
+      knex('ofertas')
+      .where('id', id)
+      .del().then(function (count) {
+          console.log(count)
+          res.sendStatus(204)
+      }).catch(function (err) {
+          res.status(404).send({ userMessage: "La oferta no existe", devMessage: "" })
+      });    
   }
 }
 
