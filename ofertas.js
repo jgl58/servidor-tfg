@@ -240,7 +240,15 @@ exports.createOferta = function (req, res) {
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
         knex('ofertas').insert([
-            { titulo: oferta.titulo, descripcion: oferta.descripcion, provincia_id: oferta.provincia, estado: false, fecha: oferta.fecha, duracion: oferta.duracion}
+            { titulo: oferta.titulo, 
+              descripcion: oferta.descripcion, 
+              provincia_id: oferta.provincia, 
+              estado: false, 
+              fecha: oferta.fecha, 
+              duracion: oferta.duracion,
+              direccion: oferta.direccion,
+              poblacion: oferta.poblacion
+            }
         ]).then(function (id) {
             var idOferta = id;
             knex('ofertas_usuarios').insert([
