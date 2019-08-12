@@ -195,3 +195,40 @@ exports.getProvincia = function (pet, res) {
     }
 
 }
+
+
+exports.valorar = function (req, res) {
+    var token = req.headers.authorization;
+    var valoracion = req.body
+    if(!token){
+        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
+    }else{
+        knex('valoraciones').insert([
+            { profesional_id: valoracion.id,
+                valoracion: valoracion.valoracion
+            }
+        ]).then(function (id) {
+            res.sendStatus(201);
+        }).catch(function(error){
+            
+            res.sendStatus(401);
+        })
+    }
+}
+
+exports.getValoracion = function (req, res) {
+    var token = req.headers.authorization;
+    var id = req.params.id
+    if(!token){
+        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
+    }else{
+        knex('valoraciones').where('profesional_id',id).then(function (data) {
+
+            console.log(data)
+
+            
+        }).catch((error) => {
+            res.status(404).send({ userMessage: "Provincia no existente", devMessage: "" })
+        });
+    }
+}

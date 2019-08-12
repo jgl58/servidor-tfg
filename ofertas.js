@@ -4,6 +4,10 @@ var bp = require('body-parser');
 var horario = require('./horario')
 var nodemailer = require('nodemailer');
 var notificacion = require('./notificaciones')
+
+var distance = require('google-distance-matrix');
+distance.key('AIzaSyAYS8EDyWG-GGFK80V2bwJ3atV68WninOI')
+
 app.use(bp.urlencoded({
     extended: true
 }));
@@ -282,7 +286,6 @@ exports.updateOferta = function (req, res) {
         descripcion: oferta.descripcion, 
         provincia_id: oferta.provincia
       }).then(function (count) {
-          console.log(count)
           res.sendStatus(204)
       }).catch(function (err) {
           res.status(404).send({ userMessage: "La oferta no existe", devMessage: "" })
@@ -301,7 +304,6 @@ exports.borrarOferta = function (req, res) {
       knex('ofertas')
       .where('id', id)
       .del().then(function (count) {
-          console.log(count)
           res.sendStatus(204)
       }).catch(function (err) {
           res.status(404).send({ userMessage: "La oferta no existe", devMessage: "" })
@@ -314,40 +316,90 @@ function autoseleccionar (id){
     
     knex('ofertas').where('id',id).first().then(function(oferta){      
 
-       knex('profesionales').where('provincia',oferta.provincia_id).then(function(profesionales){   
-            console.log(profesionales)
+       knex('profesionales').where('provincia',oferta.provincia_id).then(function(profesionales){  
             if(profesionales.length == 1){
-                horario.comprobarHorario(profesionales[0].id,oferta.fecha, function(libre){
-                    if(libre == true){
-                        notificar(profesionales[0].id,id)
-                        console.log("Solo hay uno")
-                    }
-                })           
+              horario.comprobarHorario(profesionales[0].id,oferta.fecha, function(libre){
+                  if(libre == true){
+                      notificar(profesionales[0].id,id)
+                      console.log("Solo hay uno")
+                  }
+              })           
             }else if(profesionales.length > 1){
-                var disponibles = []
-                console.log("Filtrando profesionales disponibles")
+              console.log("Filtrando profesionales disponibles")
+              comprobarHorario(profesionales,oferta,function(disponibles){
+                
+                comprobarDistancia(disponibles,oferta,function(finales){
+                  console.log(finales)
 
-                for(let j=0; j<profesionales.length;j++){
-                    horario.comprobarHorario(profesionales[j].id,oferta.fecha, function(libre){
-                        if(libre == true){
-                            disponibles.push(profesionales[j])
-                        }
-                    })
-                }
-                 
-                console.log("Hay mas de uno")
-                console.log(disponibles)
+                  let min = finales[0]
+                  let i = 0
+                  for(let j=1; j<finales.length;j++){
+                    if(finales[j]<min)
+                      min = finales[j]
+                      i = j
+                  }
+                  console.log("notificado")
+                  console.log(finales[i])
+                  notificar(disponibles[i].id,id)
+  
+                })
+              })
             }else{
                 console.log("No hay usuarios")
             }
-        }).catch((error) => {
-            res.status(404).send({userMessage: "Oferta no existente", devMessage: ""})
-        });
+        }).catch((error) => {});
 
     }).catch((error) => {
     });
     
 }
+
+function comprobarDistancia(profesionales,oferta, callback){
+  var origins = [oferta.poblacion+oferta.direccion];
+  let disponibles = []
+  for(let j=0; j<profesionales.length;j++){
+    var destinations = [profesionales[j].poblacion+profesionales[j].direccion];
+    distance.matrix(origins, destinations, function (err, distances) {
+      if (!err)
+          console.log(distances);
+
+      if (distances.status == 'OK') {
+        for (var i=0; i < origins.length; i++) {
+            for (var k = 0; k < destinations.length; k++) {
+                if (distances.rows[0].elements[k].status == 'OK') {
+                    var distance = distances.rows[i].elements[k].distance.value;
+                    disponibles.push(distance)
+                } 
+
+                if(j==profesionales.length-1){
+                  callback(disponibles)
+                }
+            }
+            
+        }
+      }
+      
+    })
+    
+  }
+}
+
+
+function comprobarHorario(profesionales,oferta, callback){
+  let disponibles = []
+  for(let j=0; j<profesionales.length;j++){
+    horario.comprobarHorario(profesionales[j].id,oferta.fecha, function(libre){                       
+        if(libre==true){
+          disponibles.push(profesionales[j])
+        }
+
+        if(j==profesionales.length-1){
+          callback(disponibles)
+        }
+    })
+  }
+}
+
 
 function notificar(idUsuario, idOferta){
     
@@ -357,7 +409,8 @@ function notificar(idUsuario, idOferta){
 
     knex('profesionales','provincias.provincia').innerJoin('provincias','provincias.id','=','profesionales.provincia').where('profesionales.id', idUsuario).first("profesionales.*").then(function (profesional) {
         console.log(profesional)
-        knex('ofertas').where('id',idOferta).first().then(function(oferta){  
+        if(profesional.email != ""){
+          knex('ofertas').where('id',idOferta).first().then(function(oferta){  
             var html = `<!doctype html>
     <html>
       <head>
@@ -722,6 +775,8 @@ function notificar(idUsuario, idOferta){
                 });
             
         }).catch((error) => {});
+        }
+        
     
     }).catch((error) => {});
 

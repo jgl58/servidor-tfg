@@ -36,6 +36,10 @@ app.get('/profesionales/:id/notificaciones',notificaciones.getNotificacionesProf
 app.get('/users/:id',users.getUser)
 app.put('/users/:id',users.updateUser)
 
+app.post('/profesionales/:id',users.valorar)
+
+app.get('/profesionales/:id/valoracion',users.getValoracion)
+
 app.get('/ofertas/:id',ofertas.getOfertaSola)
 
 app.post('/login',auth.login)
