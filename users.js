@@ -223,12 +223,17 @@ exports.getValoracion = function (req, res) {
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
         knex('valoraciones').where('profesional_id',id).then(function (data) {
-
             console.log(data)
-
-            
+            let sum = 0
+            for(let i=0;i<data.length;i++){
+                sum += data[i].valoracion
+            }
+            let media = sum / data.length
+            res.status(200).send({
+                "valoracion": media
+            })
         }).catch((error) => {
-            res.status(404).send({ userMessage: "Provincia no existente", devMessage: "" })
+            res.status(404).send({ userMessage: "Profesional no existente", devMessage: "" })
         });
     }
 }
