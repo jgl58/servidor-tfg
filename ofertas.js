@@ -326,21 +326,62 @@ function autoseleccionar (id){
               })           
             }else if(profesionales.length > 1){
               console.log("Filtrando profesionales disponibles")
+              console.log("Estos son los profesionales que hay: ")
+              console.log(profesionales)
               comprobarHorario(profesionales,oferta,function(disponibles){
-                
+                console.log("Estos son los profesionales que tienen el horario libre: ")
+                console.log(disponibles)
                 comprobarDistancia(disponibles,oferta,function(finales){
+                  console.log("Estas son las distancias: ")
                   console.log(finales)
 
+                  let minRepetido = false
                   let min = finales[0]
-                  let i = 0
+                  let i = [0]
                   for(let j=1; j<finales.length;j++){
-                    if(finales[j]<min)
-                      min = finales[j]
-                      i = j
+                      if(finales[j]<min){
+                          min = finales[j]
+                          i = []
+                          i.push(j)
+                      }else if(finales[j] == min){
+                          minRepetido = true
+                          i.push(j)
+                      }
                   }
-                  console.log("notificado")
+
+                  if(!minRepetido){
+                    console.log("Notificando a :")
+                    console.log(finales[i[0]])
+                    notificar(disponibles[i[0]].id,id)
+                  }else{
+                    console.log("Distancias repetidas")
+                    var repetidos = []
+                    for(let k=0;k<i.length;k++){
+                      repetidos.push(disponibles[i[k]])
+                    }
+                    console.log(repetidos)
+                    comprobarValoracion(repetidos,function(valoraciones){
+                      console.log("Comprobando valoracion:")
+                      console.log(valoraciones)
+                      let max = valoraciones[0]
+                      let m = 0
+                      for(let k=1; k<valoraciones.length;k++){
+                          if(valoraciones[k]>max){
+                              max = valoraciones[k]
+                              m = k
+                          }
+                      }
+                      console.log("Valoraciones:")
+                      console.log(valoraciones)
+                      console.log("Notificando a :")
+                      console.log(repetidos[m])
+                      notificar(repetidos[m].id,id)
+                    })
+
+                  }
+                /*  console.log("Notificando a :")
                   console.log(finales[i])
-                  notificar(disponibles[i].id,id)
+                  notificar(disponibles[i].id,id)*/
   
                 })
               })
@@ -360,9 +401,9 @@ function comprobarDistancia(profesionales,oferta, callback){
   for(let j=0; j<profesionales.length;j++){
     var destinations = [profesionales[j].poblacion+profesionales[j].direccion];
     distance.matrix(origins, destinations, function (err, distances) {
-      if (!err)
-          console.log(distances);
-
+     /* if (!err)
+          console.log(distances);*/
+      
       if (distances.status == 'OK') {
         for (var i=0; i < origins.length; i++) {
             for (var k = 0; k < destinations.length; k++) {
@@ -400,12 +441,33 @@ function comprobarHorario(profesionales,oferta, callback){
   }
 }
 
+function comprobarValoracion(profesionales,callback){
+  
+  let valoraciones = []
+  console.log("Profesionales")
+  console.log(profesionales)
+
+  for(let j=0; j<profesionales.length;j++){
+    console.log("HOLA")
+    knex('valoraciones').where('profesional_id',profesionales[j].id).then(function (data) {
+      let sum = 0
+      for(let i=0;i<data.length;i++){
+          sum += data[i].valoracion
+      }
+      let media = sum / data.length
+      valoraciones.push(media)
+      if(j==profesionales.length-1){
+        callback(valoraciones)
+      }
+      
+    }).catch((error) => {});
+  }
+  
+}
+
 
 function notificar(idUsuario, idOferta){
     
-
-    
-
 
     knex('profesionales','provincias.provincia').innerJoin('provincias','provincias.id','=','profesionales.provincia').where('profesionales.id', idUsuario).first("profesionales.*").then(function (profesional) {
         console.log(profesional)

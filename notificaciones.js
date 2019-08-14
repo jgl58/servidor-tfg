@@ -45,7 +45,6 @@ exports.getNotificacionesProfesional = function(pet,res){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
         knex('notificaciones').where('profesional_id',id).then(function(data){
-            console.log(data)
             res.status(200).send({
                 "notificaciones": data
             }) 
