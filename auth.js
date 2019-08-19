@@ -21,23 +21,67 @@ var knex = require('knex')({
 });
 
 
+exports.middleware = function(pet,res,next){
+    var token = pet.headers.authorization;
+    if(!token){
+        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
+    }else{
+        var token = jwt.decode(token,secret)
+        comprobarToken(token.profesional,token.nick,token.pass,(result)=>{
+            if(result){
+                next()
+            }else{
+                res.status(401).send({userMessage: "Token no valido", devMessage: ""})
+            }
+        })
+        
+    }
+}
+
+function comprobarToken(isProfesional, email,pass, callback) {
+
+    if(isProfesional){
+        knex('profesionales').count('id as c').where('email', email).where('password',pass).then(function (total) {
+
+            if (total[0].c == 1) {
+                callback(true)
+            } else {
+                callback(false)
+            }
+        })
+    }else{
+        knex('users').count('id as c').where('email', email).where('password',pass).then(function (total) {
+
+            if (total[0].c == 1) {
+                callback(true)
+            } else {
+                callback(false)
+            }
+        })
+    }
+}
+
+
+
+
 exports.login = function (req, res) {
 
     var isProfesional = req.body.profesional
     var email = req.body.email;
     var pass = req.body.pass;
-    console.log("Login")
     if (email != "" && pass != "") {
 
         if (isProfesional) {
-            knex('profesionales').where('email', email).where('password', pass).count('email as c').then(function (total) {
+            knex('profesionales').where('email', email).where('password',pass).count('email as c').then(function (total) {
                 if (total[0].c == 1) {
+                   
                     knex('profesionales').where('email', email).first().then(function (query) {
-
                         var payload = {
                             idUser: query.id,
-                            nick: query.nombre,
-                            provincia: query.provincia
+                            nick: query.email, 
+                            pass: query.password,
+                            provincia: query.provincia,
+                            profesional: true
                         } 
                         var token = jwt.encode(payload,secret);
                         res.setHeader('Authorization','Bearer',token);
@@ -63,8 +107,10 @@ exports.login = function (req, res) {
                     knex('users').where('email', email).first().then(function (query) {
                         var payload = {
                             idUser: query.id,
-                            nick: query.nombre,
-                            provincia: query.provincia
+                            nick: query.email,
+                            pass: query.password,
+                            provincia: query.provincia,
+                            profesional: false
                         } 
                         var token = jwt.encode(payload,secret);
                         res.setHeader('Authorization','Bearer',token);
@@ -124,9 +170,7 @@ exports.registrar = function (req, res) {
     var provincia = req.body.provincia;
     var direccion = req.body.direccion;
     var pais = req.body.pais;
-    console.log(req.body)
     existe(isProfesional, email, function (exists) {
-        //console.log(exists)
         if (!exists) {
             var data = {
                 email: email,
@@ -140,7 +184,6 @@ exports.registrar = function (req, res) {
             }
 
             if(isProfesional){
-                console.log("Registrando profesional")
                 knex('profesionales').insert([
                     { email: data.email, password: data.pass, nombre: data.nombre, apellidos: data.apellidos, poblacion: data.poblacion, provincia: data.provincia,
                         direccion: data.direccion, pais: data.pais }
@@ -151,7 +194,6 @@ exports.registrar = function (req, res) {
                 })
             }
             else{
-                console.log("Registrando cliente")
                 knex('users').insert([
                     { email: data.email, password: data.pass, nombre: data.nombre, apellidos: data.apellidos, poblacion: data.poblacion, provincia: data.provincia,
                         direccion: data.direccion, pais: data.pais }

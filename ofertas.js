@@ -24,33 +24,23 @@ var knex = require('knex')({
 exports.getOfertas = function(pet,res){
 
     var id = pet.params.id
-    var token = pet.headers.authorization;
-   //console.log("Token: "+token)
-    if(!token){
-        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
-    }else{
-        knex('ofertas').select('ofertas.*').
-        innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').
-        where('ofertas_usuarios.user_id',id)
-        .then(function(data){
-            
-            res.status(200).send({
-                "ofertas": data
-            }) 
-        }).catch((error) => {
-            res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
-        });
-    }
+      knex('ofertas').select('ofertas.*').
+      innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').
+      where('ofertas_usuarios.user_id',id)
+      .then(function(data){
+          
+          res.status(200).send({
+              "ofertas": data
+          }) 
+      }).catch((error) => {
+          res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
+      });
+    
 }
 
 exports.getOfertaSola = function(pet,res){
 
   var id = pet.params.id
- // var token = pet.headers.authorization;
- //console.log("Token: "+token)
-  /*if(!token){
-      res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
-  }else{*/
       knex('ofertas').select('ofertas.*').
       where('id',id).first()
       .then(function(data){
@@ -61,17 +51,11 @@ exports.getOfertaSola = function(pet,res){
       }).catch((error) => {
           res.status(404).send({userMessage: "Oferta no existente", devMessage: ""})
       });
-  //}
 }
 
 exports.getTrabajosProvincia = function(pet,res){
 
     var id = pet.params.id
-    var token = pet.headers.authorization;
-   //console.log("Token: "+token)
-    if(!token){
-        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
-    }else{
         knex('ofertas').select('ofertas.*').
         innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').
         where('ofertas_usuarios.profesional_id',id).
@@ -84,17 +68,12 @@ exports.getTrabajosProvincia = function(pet,res){
         }).catch((error) => {
             res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
         });
-    }
+    
 }
 
 exports.getTrabajos = function(pet,res){
 
     var id = pet.params.id
-    var token = pet.headers.authorization;
-   //console.log("Token: "+token)
-    if(!token){
-        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
-    }else{
         knex('ofertas').select('ofertas.*').innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').where('ofertas_usuarios.profesional_id',id).then(function(data){
             
             res.status(200).send({
@@ -103,7 +82,7 @@ exports.getTrabajos = function(pet,res){
         }).catch((error) => {
             res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
         });
-    }
+    
 }
 
 
@@ -119,7 +98,7 @@ function actualizarOfertasUsuario(idTrabajo,id,fecha,callback){
             estado: true
         }).then(function (count) {
             horario.insertarHorario(id,fecha,idTrabajo,(insertado) => {
-                console.log("HOLA")
+                
                 if(insertado){
                     callback(true)
                 }else{
@@ -136,17 +115,11 @@ exports.aceptarOferta = function(req,res){
 
     var id = req.params.id
     var idTrabajo = req.params.idTrabajo;
-    var token = req.headers.authorization;
-
-    
-    if(!token){
-        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
-    }else{
         knex('ofertas').where('id',idTrabajo).first()
         .then(function(data){
-            console.log(data)
+            
              horario.comprobarHorario(id,data.fecha,(disponible) => {
-                console.log(disponible)
+                
                 if(disponible == true){ 
                     actualizarOfertasUsuario(idTrabajo,id,data.fecha,(actualizado)=>{
                         if(actualizado == true){
@@ -163,18 +136,13 @@ exports.aceptarOferta = function(req,res){
         }).catch(function (err) {
             res.status(404).send({ userMessage: "El trabajo no existe", devMessage: "" })
         });
-    }
+    
 }
 
 
 exports.getClienteTrabajo = function(pet,res){
 
     var id = pet.params.idOferta
-    var token = pet.headers.authorization;
-   //console.log("Token: "+token)
-    if(!token){
-        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
-    }else{
         knex('ofertas_usuarios').first('users.*').innerJoin('users','ofertas_usuarios.user_id','=','users.id').where('ofertas_usuarios.oferta_id',id).then(function(data){
             
             res.status(200).send({
@@ -183,18 +151,13 @@ exports.getClienteTrabajo = function(pet,res){
         }).catch((error) => {
             res.status(404).send({userMessage: "Cliente no existente", devMessage: ""})
         });
-    }
+    
 }
 
 
 exports.getProfesionalOferta = function(pet,res){
 
     var id = pet.params.idOferta
-    var token = pet.headers.authorization;
-   //console.log("Token: "+token)
-    if(!token){
-        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
-    }else{
         knex('ofertas_usuarios').first('profesionales.*').innerJoin('profesionales','ofertas_usuarios.profesional_id','=','profesionales.id').where('ofertas_usuarios.oferta_id',id).then(function(data){
             
             res.status(200).send({
@@ -203,25 +166,13 @@ exports.getProfesionalOferta = function(pet,res){
         }).catch((error) => {
             res.status(404).send({userMessage: "Profesional no existente", devMessage: ""})
         });
-    }
+    
 }
 
 
 exports.getOferta = function(pet,res){
 
     var id = pet.params.idOferta
-    var token = pet.headers.authorization;
-   //console.log("Token: "+token)
-    if(!token){
-        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
-    }else{
-      /*  knex('ofertas').where('id',id).first().then(function(data){      
-            res.status(200).send({
-                "oferta": data
-            }) 
-        }).catch((error) => {
-            res.status(404).send({userMessage: "Oferta no existente", devMessage: ""})
-        });*/
         knex('ofertas').first('ofertas.*','ofertas_usuarios.user_id').
         innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').
         where('ofertas.id',id)
@@ -233,16 +184,12 @@ exports.getOferta = function(pet,res){
         }).catch((error) => {
             res.status(404).send({userMessage: "Oferta no existente", devMessage: ""})
         });
-    }
+    
 }
 
 
 exports.createOferta = function (req, res) {
-    var token = req.headers.authorization;
     var oferta = req.body
-    if(!token){
-        res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
-    }else{
         knex('ofertas').insert([
             { titulo: oferta.titulo, 
               descripcion: oferta.descripcion, 
@@ -268,19 +215,13 @@ exports.createOferta = function (req, res) {
             
             res.sendStatus(401);
         })
-    }
+    
 }
 
 exports.updateOferta = function (req, res) {
 
-  var token = req.headers.authorization;
- //console.log("Token: "+token)
-  if(!token){
-      res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
-  }else{
       var id = req.params.idOferta
       var oferta = req.body;
-      console.log(oferta)
       knex('ofertas').where({id}).update({ 
         titulo: oferta.titulo, 
         descripcion: oferta.descripcion, 
@@ -290,16 +231,11 @@ exports.updateOferta = function (req, res) {
       }).catch(function (err) {
           res.status(404).send({ userMessage: "La oferta no existe", devMessage: "" })
       });    
-  }
+  
 }
 
 exports.borrarOferta = function (req, res) {
 
-  var token = req.headers.authorization;
- //console.log("Token: "+token)
-  if(!token){
-      res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
-  }else{
       var id = req.params.idOferta
       knex('ofertas')
       .where('id', id)
@@ -308,7 +244,7 @@ exports.borrarOferta = function (req, res) {
       }).catch(function (err) {
           res.status(404).send({ userMessage: "La oferta no existe", devMessage: "" })
       });    
-  }
+  
 }
 
 
@@ -379,9 +315,6 @@ function autoseleccionar (id){
                     })
 
                   }
-                /*  console.log("Notificando a :")
-                  console.log(finales[i])
-                  notificar(disponibles[i].id,id)*/
   
                 })
               })
@@ -401,9 +334,6 @@ function comprobarDistancia(profesionales,oferta, callback){
   for(let j=0; j<profesionales.length;j++){
     var destinations = [profesionales[j].poblacion+profesionales[j].direccion];
     distance.matrix(origins, destinations, function (err, distances) {
-     /* if (!err)
-          console.log(distances);*/
-      
       if (distances.status == 'OK') {
         for (var i=0; i < origins.length; i++) {
             for (var k = 0; k < destinations.length; k++) {
@@ -444,11 +374,9 @@ function comprobarHorario(profesionales,oferta, callback){
 function comprobarValoracion(profesionales,callback){
   
   let valoraciones = []
-  console.log("Profesionales")
-  console.log(profesionales)
 
   for(let j=0; j<profesionales.length;j++){
-    console.log("HOLA")
+    
     knex('valoraciones').where('profesional_id',profesionales[j].id).then(function (data) {
       let sum = 0
       for(let i=0;i<data.length;i++){
@@ -470,7 +398,7 @@ function notificar(idUsuario, idOferta){
     
 
     knex('profesionales','provincias.provincia').innerJoin('provincias','provincias.id','=','profesionales.provincia').where('profesionales.id', idUsuario).first("profesionales.*").then(function (profesional) {
-        console.log(profesional)
+        
         if(profesional.email != ""){
           knex('ofertas').where('id',idOferta).first().then(function(oferta){  
             var html = `<!doctype html>
