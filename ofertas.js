@@ -146,6 +146,39 @@ exports.aceptarOferta = function(req,res){
     
 }
 
+exports.cancelarOferta = function(req,res){
+
+  var id = req.params.id
+  var idTrabajo = req.params.idOferta;
+  knex('ofertas_usuarios')
+  .where('oferta_id',idTrabajo)
+  .where('profesional_id',id)
+  .first()
+  .then(function(data){
+    knex('ofertas_usuarios')
+    .where('id',data.id)
+    .update({
+      profesional_id: null
+    })  
+    .then(function(count){
+        knex('ofertas').where("id",idTrabajo).update({
+          estado: false
+        }).then(function (count) {
+
+          knex('horario')
+          .where('trabajo',idTrabajo)
+          .del()
+          .then(function(count){
+            res.sendStatus(204)
+          })
+
+        })          
+    }).catch(function (err) {
+        res.status(404).send({ userMessage: "El trabajo no existe", devMessage: "" })
+    });
+  })  
+}
+
 
 exports.getClienteTrabajo = function(pet,res){
 

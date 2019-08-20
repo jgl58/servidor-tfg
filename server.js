@@ -33,6 +33,9 @@ app.put('/profesionales/:id',auth.middleware,users.updateProfesional)
 app.get('/profesionales/:id/clientes',auth.middleware,users.getHistorialClientes)
 app.get('/profesional/:id/trabajos',auth.middleware,ofertas.getTrabajos)
 app.put('/profesional/:id/trabajos/:idTrabajo',auth.middleware,ofertas.aceptarOferta)
+app.get('/profesionales/:id/trabajos/:idOferta/user',auth.middleware,ofertas.getClienteTrabajo)
+app.put('/profesionales/:id/trabajos/:idOferta/cancelar',auth.middleware,ofertas.cancelarOferta)
+
 app.get('/profesionales/:id/horario',auth.middleware,horario.getHorario)
 app.get('/profesionales/:id/notificaciones',auth.middleware,notificaciones.getNotificacionesProfesional)
 app.get('/users/:id',auth.middleware,users.getUser)
@@ -55,9 +58,8 @@ app.put('/users/:id/ofertas/:idOferta',auth.middleware,ofertas.updateOferta)
 app.delete('/users/:id/ofertas/:idOferta',auth.middleware,ofertas.borrarOferta)
 
 app.post('/users/:id/ofertas',auth.middleware,ofertas.createOferta)
-app.get('/users/:id/ofertas/:idOferta/user',auth.middleware,ofertas.getClienteTrabajo)
-app.get('/users/:id/ofertas/:idOferta/profesional',auth.middleware,ofertas.getProfesionalOferta)
 
+app.get('/users/:id/ofertas/:idOferta/profesional',auth.middleware,ofertas.getProfesionalOferta)
 
 app.get('/provincias',users.getProvincias)
 app.get('/provincias/:id',users.getProvincia)
