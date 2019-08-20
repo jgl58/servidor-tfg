@@ -1,5 +1,7 @@
 //Cargamos el módulo express
 var express = require('express');
+var fs = require('fs')
+var https = require('https')
 var cors = require('cors')
 var app = express();
 
@@ -62,7 +64,11 @@ app.get('/provincias/:id',users.getProvincia)
 
 
 app.get('/buscador/:idProvincia',auth.middleware,buscador.getOfertasProvincias)
-
+/*
+https.createServer({
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+}, app)*/
 app.listen(3030, function () {
-    console.log("El servidor express está en el puerto 3030"); 
-});
+  console.log('Example app listening on port 3030! Go to https://localhost:3030/')
+})

@@ -36,6 +36,19 @@ exports.notificar = function(idProfesional,tipo,mensaje){
     
 }
 
+exports.borrarNotificacion = function(notificacion){
+
+    console.log(notificacion)
+    knex('notificaciones')
+    .where('profesional_id',notificacion.profesional_id)
+    .where('tipo',notificacion.tipo)
+    .where('mensaje', notificacion.mensaje)
+    .del()
+    .then(function(count){
+        console.log(count)
+    }).catch(function(err){});
+}
+
 exports.getNotificacionesProfesional = function(pet,res){
 
     var id = pet.params.id

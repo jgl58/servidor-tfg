@@ -115,27 +115,34 @@ exports.aceptarOferta = function(req,res){
 
     var id = req.params.id
     var idTrabajo = req.params.idTrabajo;
-        knex('ofertas').where('id',idTrabajo).first()
-        .then(function(data){
+    knex('ofertas').where('id',idTrabajo).first()
+    .then(function(data){
+        
+          horario.comprobarHorario(id,data.fecha,(disponible) => {
             
-             horario.comprobarHorario(id,data.fecha,(disponible) => {
-                
-                if(disponible == true){ 
-                    actualizarOfertasUsuario(idTrabajo,id,data.fecha,(actualizado)=>{
-                        if(actualizado == true){
-                            res.sendStatus(204)
-                        }else{
-                            res.status(404).send({ userMessage: "Problema al aceptar", devMessage: "" })
+            if(disponible == true){ 
+                actualizarOfertasUsuario(idTrabajo,id,data.fecha,(actualizado)=>{
+                    if(actualizado == true){
+                        var n ={
+                          profesional_id: id,
+                          tipo: "oferta",
+                          mensaje: idTrabajo
                         }
-                    })
-                }else{
-                    res.sendStatus(406)
-                }
-             })
-             
-        }).catch(function (err) {
-            res.status(404).send({ userMessage: "El trabajo no existe", devMessage: "" })
-        });
+                        console.log(n)
+                        notificacion.borrarNotificacion(n)
+                        res.sendStatus(204)
+                    }else{
+                        res.status(404).send({ userMessage: "Problema al aceptar", devMessage: "" })
+                    }
+                })
+            }else{
+                res.sendStatus(406)
+            }
+          })
+          
+    }).catch(function (err) {
+        res.status(404).send({ userMessage: "El trabajo no existe", devMessage: "" })
+    });
     
 }
 
