@@ -22,7 +22,7 @@ var knex = require('knex')({
 exports.getUser = function (pet, res) {
 
     var id = pet.params.id
-        knex('users','provincias.provincia').innerJoin('provincias','provincias.id','=','users.provincia').where('users.id', id).first().then(function (data) {
+        knex('users','provincias.provincia').select("users.*").innerJoin('provincias','provincias.id','=','users.provincia').where('users.id', id).first().then(function (data) {
 
             res.status(200).send({
                 "user": data
@@ -36,7 +36,7 @@ exports.getUser = function (pet, res) {
 exports.getProfesional = function (pet, res) {
 
     var id = pet.params.id
-        knex('profesionales','provincias.provincia').innerJoin('provincias','provincias.id','=','profesionales.provincia').where('profesionales.id', id).first().then(function (data) {
+        knex('profesionales','provincias.provincia').select("profesionales.*").innerJoin('provincias','provincias.id','=','profesionales.provincia').where('profesionales.id', id).first().then(function (data) {
 
             res.status(200).send({
                 "user": data
@@ -80,9 +80,11 @@ exports.updateUser = function (req, res) {
 
         var id = req.params.id
         var user = req.body;
+        console.log("Actualizando user")
         knex('users').where({id}).update({
             email: user.email,
             nombre: user.nombre,
+            password: user.password,
             apellidos: user.apellidos,
             direccion: user.direccion,
             poblacion: user.poblacion,
@@ -90,7 +92,17 @@ exports.updateUser = function (req, res) {
             pais: user.pais,
             telefono: user.telefono
         }).then(function (count) {
-            res.sendStatus(204)
+
+            var payload = {
+                idUser: user.id,
+                nick: user.email, 
+                pass: user.password,
+                provincia: user.provincia,
+                profesional: false
+            } 
+            var token = jwt.encode(payload,secret);
+            res.setHeader('Authorization','Bearer',token);
+            res.status(200).send({"token": token})
         }).catch(function (err) {
             res.status(404).send({ userMessage: "El usuario no existe", devMessage: "" })
         });
@@ -101,10 +113,12 @@ exports.updateProfesional = function (req, res) {
 
         var user = req.body;
         var id = req.params.id
+        console.log("Actualizando profesional")
         knex('profesionales')
         .where({id})
         .update({email: user.email,
             nombre: user.nombre,
+            password: user.password,
             apellidos: user.apellidos,
             direccion: user.direccion,
             poblacion: user.poblacion,
@@ -113,7 +127,16 @@ exports.updateProfesional = function (req, res) {
             telefono: user.telefono
         })
         .then(function (count) {
-            res.sendStatus(204)
+            var payload = {
+                idUser: user.id,
+                nick: user.email, 
+                pass: user.password,
+                provincia: user.provincia,
+                profesional: true
+            } 
+            var token = jwt.encode(payload,secret);
+            res.setHeader('Authorization','Bearer',token);
+            res.status(200).send({"token": token})
         }).catch(function (err) {
             res.status(404).send({ userMessage: "El profesional no existe", devMessage: "" })
         });

@@ -264,6 +264,9 @@ exports.updateOferta = function (req, res) {
       var oferta = req.body;
       knex('ofertas').where({id}).update({ 
         titulo: oferta.titulo, 
+        fecha: oferta.fecha,
+        direccion: oferta.direccion,
+        poblacion: oferta.poblacion,
         descripcion: oferta.descripcion, 
         provincia_id: oferta.provincia
       }).then(function (count) {
