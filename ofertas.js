@@ -236,7 +236,6 @@ exports.createOferta = function (req, res) {
               provincia_id: oferta.provincia, 
               estado: false, 
               fecha: oferta.fecha, 
-              duracion: oferta.duracion,
               direccion: oferta.direccion,
               poblacion: oferta.poblacion
             }

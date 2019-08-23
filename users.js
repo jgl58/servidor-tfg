@@ -197,7 +197,7 @@ exports.getValoracion = function (req, res) {
             }
             let media = sum / data.length
             res.status(200).send({
-                "valoracion": media
+                "valoracion": Math.round(media)
             })
         }).catch((error) => {
             res.status(404).send({ userMessage: "Profesional no existente", devMessage: "" })
