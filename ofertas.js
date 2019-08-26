@@ -237,7 +237,9 @@ exports.createOferta = function (req, res) {
               estado: false, 
               fecha: oferta.fecha, 
               direccion: oferta.direccion,
-              poblacion: oferta.poblacion
+              poblacion: oferta.poblacion,
+              duracion: oferta.duracion,
+              precio: oferta.profesional
             }
         ]).then(function (id) {
             var idOferta = id;
@@ -267,7 +269,9 @@ exports.updateOferta = function (req, res) {
         direccion: oferta.direccion,
         poblacion: oferta.poblacion,
         descripcion: oferta.descripcion, 
-        provincia_id: oferta.provincia
+        provincia_id: oferta.provincia,
+        precio: oferta.precio,
+        duracion: oferta.duracion
       }).then(function (count) {
           res.sendStatus(204)
       }).catch(function (err) {
