@@ -24,7 +24,8 @@ exports.getOfertasProvincias = function(pet,res){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
         knex('ofertas').select('ofertas.*').innerJoin('provincias','provincias.id','=','ofertas.provincia_id')
-        .where('ofertas.provincia_id',provincia).then(function(data){
+        .where('ofertas.provincia_id',provincia)
+        .orderBy('ofertas.created_at','desc').then(function(data){
             console.log(data)
             res.status(200).send({
                 "ofertas": data

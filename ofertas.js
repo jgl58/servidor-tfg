@@ -27,6 +27,7 @@ exports.getOfertas = function(pet,res){
       knex('ofertas').select('ofertas.*').
       innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').
       where('ofertas_usuarios.user_id',id)
+      .orderBy('created_at','desc')
       .then(function(data){
           
           res.status(200).send({
@@ -60,6 +61,7 @@ exports.getTrabajosProvincia = function(pet,res){
         innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').
         where('ofertas_usuarios.profesional_id',id).
         where('ofertas.provincia',pet.params.provincia)
+        .orderBy('ofertas.created_at','desc')
         .then(function(data){
             
             res.status(200).send({
@@ -74,7 +76,8 @@ exports.getTrabajosProvincia = function(pet,res){
 exports.getTrabajos = function(pet,res){
 
     var id = pet.params.id
-        knex('ofertas').select('ofertas.*').innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').where('ofertas_usuarios.profesional_id',id).then(function(data){
+        knex('ofertas').select('ofertas.*').innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').where('ofertas_usuarios.profesional_id',id)
+        .orderBy('ofertas.created_at','desc').then(function(data){
             
             res.status(200).send({
                 "ofertas": data
@@ -118,7 +121,7 @@ exports.aceptarOferta = function(req,res){
     knex('ofertas').where('id',idTrabajo).first()
     .then(function(data){
         
-          horario.comprobarHorario(id,data.fecha,(disponible) => {
+          horario.comprobarHorario(id,data.fecha,data.duracion,(disponible) => {
             
             if(disponible == true){ 
                 actualizarOfertasUsuario(idTrabajo,id,data.fecha,(actualizado)=>{
@@ -239,7 +242,7 @@ exports.createOferta = function (req, res) {
               direccion: oferta.direccion,
               poblacion: oferta.poblacion,
               duracion: oferta.duracion,
-              precio: oferta.profesional
+              precio: oferta.precio
             }
         ]).then(function (id) {
             var idOferta = id;
@@ -300,7 +303,7 @@ function autoseleccionar (id){
 
        knex('profesionales').where('provincia',oferta.provincia_id).then(function(profesionales){  
             if(profesionales.length == 1){
-              horario.comprobarHorario(profesionales[0].id,oferta.fecha, function(libre){
+              horario.comprobarHorario(profesionales[0].id,oferta.fecha,oferta.duracion, function(libre){
                   if(libre == true){
                       notificar(profesionales[0].id,id)
                       console.log("Solo hay uno")
@@ -405,7 +408,7 @@ function comprobarDistancia(profesionales,oferta, callback){
 function comprobarHorario(profesionales,oferta, callback){
   let disponibles = []
   for(let j=0; j<profesionales.length;j++){
-    horario.comprobarHorario(profesionales[j].id,oferta.fecha, function(libre){                       
+    horario.comprobarHorario(profesionales[j].id,oferta.fecha,oferta.duracion, function(libre){                       
         if(libre==true){
           disponibles.push(profesionales[j])
         }

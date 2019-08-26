@@ -39,7 +39,7 @@ exports.insertarHorario = function(profesional,dia,trabajo,callback){
     
 }
 
-exports.comprobarHorario = function(id,fecha,callback){
+exports.comprobarHorario = function(id,fecha,duracion,callback){
     knex('horario').where('profesional',id).then(function(data){
         if(data.length == 0){
             callback(true)

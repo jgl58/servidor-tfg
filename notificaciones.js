@@ -36,6 +36,17 @@ exports.notificar = function(idProfesional,tipo,mensaje){
     
 }
 
+exports.cancelarNotificacion = function(req,res){
+
+    var notificacion = req.params.idNotificacion
+    knex('notificaciones')
+    .where('id',notificacion)
+    .del()
+    .then(function(count){
+        res.sendStatus(204)
+    }).catch(function(err){});
+}
+
 exports.borrarNotificacion = function(notificacion){
 
     console.log(notificacion)

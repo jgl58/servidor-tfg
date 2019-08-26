@@ -36,6 +36,8 @@ app.put('/profesional/:id/trabajos/:idTrabajo',auth.middleware,ofertas.aceptarOf
 app.get('/profesionales/:id/trabajos/:idOferta/user',auth.middleware,ofertas.getClienteTrabajo)
 app.put('/profesionales/:id/trabajos/:idOferta/cancelar',auth.middleware,ofertas.cancelarOferta)
 
+app.delete('/profesionales/:id/notificaciones/:idNotificacion',notificaciones.cancelarNotificacion)
+
 app.get('/profesionales/:id/horario',auth.middleware,horario.getHorario)
 app.get('/profesionales/:id/notificaciones',auth.middleware,notificaciones.getNotificacionesProfesional)
 app.get('/users/:id',auth.middleware,users.getUser)
