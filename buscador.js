@@ -25,6 +25,7 @@ exports.getOfertasProvincias = function(pet,res){
     }else{
         knex('ofertas').select('ofertas.*').innerJoin('provincias','provincias.id','=','ofertas.provincia_id')
         .where('ofertas.provincia_id',provincia)
+        .where('ofertas.estado',0)
         .orderBy('ofertas.created_at','desc').then(function(data){
             
             res.status(200).send({

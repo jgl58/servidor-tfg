@@ -61,76 +61,86 @@ function comprobarToken(isProfesional, email,pass, callback) {
     }
 }
 
+function loginToken(token,res){
+    console.log("Login con token")
+    var t = jwt.decode(token,secret)
+    console.log(t)
+    completarLogin(t.profesional,t.nick,t.pass,res)
+}
 
+function completarLogin(isProfesional,email,pass,res){
+    if (isProfesional) {
+        knex('profesionales').where('email', email).where('password',pass).count('email as c').then(function (total) {
+            if (total[0].c == 1) {
+               
+                knex('profesionales').where('email', email).first().then(function (query) {
+                    var payload = {
+                        idUser: query.id,
+                        nick: query.email, 
+                        pass: query.password,
+                        provincia: query.provincia,
+                        profesional: true
+                    } 
+                    var token = jwt.encode(payload,secret);
+                    res.setHeader('Authorization','Bearer',token);
+                    res.status(200).send({
+                        "token": token,
+                        "idUser": query.id,
+                        "nombre": query.nombre,
+                        "provincia": query.provincia,
+                        "mensaje": "login ok"
+                    })
+                })
+                
+            } else {
+                
+                res.status(401).send({
+                    "mensaje": "login bad"
+                })
+            }
+        })
+    } else {
+        knex('users').where('email', email).where('password', pass).count('email as c').then(function (total) {
+            if (total[0].c == 1) {
+                knex('users').where('email', email).first().then(function (query) {
+                    var payload = {
+                        idUser: query.id,
+                        nick: query.email,
+                        pass: query.password,
+                        provincia: query.provincia,
+                        profesional: false
+                    } 
+                    var token = jwt.encode(payload,secret);
+                    res.setHeader('Authorization','Bearer',token);
+                    res.status(200).send({
+                        "token": token,
+                        "idUser": query.id,
+                        "nombre": query.nombre,
+                        "provincia": query.provincia,
+                        "mensaje": "login ok"
+                    })
+                })
+            } else {
+                res.status(401).send({
+                    "mensaje": "login bad"
+                })
+            }
+        })
+    }
+}
 
 
 exports.login = function (req, res) {
 
+    var token = req.body.token
     var isProfesional = req.body.profesional
     var email = req.body.email;
     var pass = req.body.pass;
-    if (email != "" && pass != "") {
 
-        if (isProfesional) {
-            knex('profesionales').where('email', email).where('password',pass).count('email as c').then(function (total) {
-                if (total[0].c == 1) {
-                   
-                    knex('profesionales').where('email', email).first().then(function (query) {
-                        var payload = {
-                            idUser: query.id,
-                            nick: query.email, 
-                            pass: query.password,
-                            provincia: query.provincia,
-                            profesional: true
-                        } 
-                        var token = jwt.encode(payload,secret);
-                        res.setHeader('Authorization','Bearer',token);
-                        res.status(200).send({
-                            "token": token,
-                            "idUser": query.id,
-                            "nombre": query.nombre,
-                            "provincia": query.provincia,
-                            "mensaje": "login ok"
-                        })
-                    })
-                    
-                } else {
-                    
-                    res.status(401).send({
-                        "mensaje": "login bad"
-                    })
-                }
-            })
-        } else {
-            knex('users').where('email', email).where('password', pass).count('email as c').then(function (total) {
-                if (total[0].c == 1) {
-                    knex('users').where('email', email).first().then(function (query) {
-                        var payload = {
-                            idUser: query.id,
-                            nick: query.email,
-                            pass: query.password,
-                            provincia: query.provincia,
-                            profesional: false
-                        } 
-                        var token = jwt.encode(payload,secret);
-                        res.setHeader('Authorization','Bearer',token);
-                        res.status(200).send({
-                            "token": token,
-                            "idUser": query.id,
-                            "nombre": query.nombre,
-                            "provincia": query.provincia,
-                            "mensaje": "login ok"
-                        })
-                    })
-                } else {
-                    res.status(401).send({
-                        "mensaje": "login bad"
-                    })
-                }
-            })
-        }
-
-       
+    if(token != undefined){
+        loginToken(token,res)
+    }else if(email != "" && pass != ""){
+        completarLogin(isProfesional,email,pass,res)  
     }
 }
 
