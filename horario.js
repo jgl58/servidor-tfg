@@ -41,29 +41,36 @@ exports.insertarHorario = function(profesional,dia,trabajo,callback){
 
 exports.comprobarHorario = function(id,fecha,duracion,callback){
     knex('horario').where('profesional',id).then(function(data){
+        
         if(data.length == 0){
             callback(true)
         }else{
             var disponible = true
             for(let i=0;i<data.length;i++){
-                if(compararFechas(data[i].dia,fecha)){ 
+                let f1 = new Date(data[i].dia)
+                f1.setHours(f1.getHours() + duracion)
+                console.log(compararFechas(fecha,f1))
+                if(!compararFechas(fecha,f1)){ 
                     disponible =false
-                    break
                 }
             }
-
+            
             callback(disponible)
         }      
         
     })
 }
 
-function compararFechas(fecha1,fecha2){
-    var d1 = new Date(fecha1)
-    var d2 = new Date(fecha2)
-    if(d1.getHours() == d2.getHours() && d1.getMinutes() == d2.getMinutes()){
+function compararFechas(fechaInueva,fechaFantigua){
+    var d1 = new Date(fechaInueva)
+    var d2 = new Date(fechaFantigua)
+    console.log(d1)
+    console.log(d2)
+    if(d1 > d2){
+        console.log("lhjasdgf")
         return true
     }else{
+        console.log("Fechas solapadas")
         return false
     }
 }

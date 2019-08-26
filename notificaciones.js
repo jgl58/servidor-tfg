@@ -49,7 +49,6 @@ exports.cancelarNotificacion = function(req,res){
 
 exports.borrarNotificacion = function(notificacion){
 
-    console.log(notificacion)
     knex('notificaciones')
     .where('profesional_id',notificacion.profesional_id)
     .where('tipo',notificacion.tipo)

@@ -175,16 +175,33 @@ exports.getProvincia = function (pet, res) {
 
 exports.valorar = function (req, res) {
     var valoracion = req.body
-        knex('valoraciones').insert([
-            { profesional_id: valoracion.id,
-                valoracion: valoracion.valoracion
-            }
-        ]).then(function (id) {
-            res.sendStatus(201);
-        }).catch(function(error){
-            
+
+
+    knex('valoraciones')
+    .where('profesional_id',valoracion.id)
+    .where('user_id',valoracion.user_id)
+    .where('oferta_id',valoracion.oferta_id)
+    .then(function (data) {
+        if(data.length != 0){
             res.sendStatus(401);
-        })
+        }else{
+            knex('valoraciones').insert([
+                { profesional_id: valoracion.id,
+                    valoracion: valoracion.valoracion,
+                    user_id: valoracion.user_id,
+                    oferta_id: valoracion.oferta_id
+                }
+            ]).then(function (id) {
+                res.sendStatus(201);
+            }).catch(function(error){
+                
+                res.sendStatus(401);
+            })
+        }      
+    }).catch((error) => {
+        res.status(404).send({ userMessage: "Oferta no existe", devMessage: "" })
+    });
+    
     
 }
 

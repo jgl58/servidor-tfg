@@ -232,7 +232,9 @@ exports.getOferta = function(pet,res){
 
 
 exports.createOferta = function (req, res) {
+  console.log(req.params.id)
     var oferta = req.body
+    console.log(oferta)
         knex('ofertas').insert([
             { titulo: oferta.titulo, 
               descripcion: oferta.descripcion, 
@@ -246,12 +248,13 @@ exports.createOferta = function (req, res) {
             }
         ]).then(function (id) {
             var idOferta = id;
+            console.log(idOferta)
             knex('ofertas_usuarios').insert([
-                {id: id, oferta_id:id, user_id: req.params.id, profesional_id: 0}
+                {id: id, oferta_id:idOferta, user_id: req.params.id, profesional_id: 0}
             ]).then(function (id) {
                 res.sendStatus(201);
+                
                 autoseleccionar(idOferta)
-                //aqui hay que llamar al autoseleccionar
             }).catch(function(error){
                 res.sendStatus(401);
             })
