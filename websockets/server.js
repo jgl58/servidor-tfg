@@ -2,6 +2,15 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+var knex = require('knex')({
+    client: 'mysql',
+    connection: {
+      host : 'localhost',
+      password: "tfg",
+      user : 'tfg',
+      database : 'tfg'
+    }
+});
 
 io.on('connect', function (client) {
     
@@ -16,20 +25,30 @@ io.on('connect', function (client) {
         console.log(d)
         //io.sockets.in(d.room).emit('mensajeRecibir',d)
         client.broadcast.to(d.room).emit('mensaje',d);
+        guardarMensajes(d)
     })
 
     client.on('notificaciones',function(d){
-        console.log("Enviando notificacion")
-        console.log("notficacion a profesional"+d.profesional_id)
         
         client.broadcast.to("profesional"+d.profesional_id).emit('n',d);
-        
-
-
     })
+
     client.on('disconnect', function(){})
 });
 
+
+function guardarMensajes(data){
+    var ids = data.room.split("-")
+    knex('mensajes').insert([
+        { 
+            user_id: ids[0],
+            profesional_id: ids[1],
+            mensaje: data.msg,
+            autor: data.autor
+        }
+    ]).then(function (id) {
+    }).catch(function(error){})
+}
 server.listen(4001);
 //server.listen(3000);
 //app.listen(8080);

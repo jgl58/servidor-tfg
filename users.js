@@ -221,3 +221,32 @@ exports.getValoracion = function (req, res) {
         });
     
 }
+
+
+exports.getMensajesProfesional = function(pet,res){
+
+    knex('mensajes')
+    .where('profesional_id',pet.params.id)
+    .where('user_id',pet.params.idUser).then(function(data){
+        
+        res.status(200).send({
+            "mensajes": data
+        }) 
+    }).catch((error) => {
+        res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
+    });
+}
+
+exports.getMensajesUser = function(pet,res){
+
+    knex('mensajes')
+    .where('profesional_id',pet.params.idProfesional)
+    .where('user_id',pet.params.id).then(function(data){
+        
+        res.status(200).send({
+            "mensajes": data
+        }) 
+    }).catch((error) => {
+        res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
+    });
+}

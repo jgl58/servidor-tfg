@@ -62,9 +62,7 @@ function comprobarToken(isProfesional, email,pass, callback) {
 }
 
 function loginToken(token,res){
-    console.log("Login con token")
     var t = jwt.decode(token,secret)
-    console.log(t)
     completarLogin(t.profesional,t.nick,t.pass,res)
 }
 

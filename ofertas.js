@@ -8,6 +8,8 @@ var notificacion = require('./notificaciones')
 var distance = require('google-distance-matrix');
 distance.key('AIzaSyAYS8EDyWG-GGFK80V2bwJ3atV68WninOI')
 
+var EMAIL = "equipopochinki@gmail.com"
+var PASSWORD = "jonay2015"
 app.use(bp.urlencoded({
     extended: true
 }));
@@ -76,15 +78,18 @@ exports.getTrabajosProvincia = function(pet,res){
 exports.getTrabajos = function(pet,res){
 
     var id = pet.params.id
-        knex('ofertas').select('ofertas.*').innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id').where('ofertas_usuarios.profesional_id',id)
-        .orderBy('ofertas.created_at','desc').then(function(data){
-            
-            res.status(200).send({
-                "ofertas": data
-            }) 
-        }).catch((error) => {
-            res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
-        });
+    knex('ofertas').select('ofertas.*')
+    .innerJoin('ofertas_usuarios','ofertas_usuarios.oferta_id','=','ofertas.id')
+    .where('ofertas_usuarios.profesional_id',id)
+    .orderBy('ofertas.created_at','desc').then(function(data){
+      
+        
+        res.status(200).send({
+            "ofertas": data
+        }) 
+    }).catch((error) => {
+        res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
+    });
     
 }
 
@@ -232,36 +237,34 @@ exports.getOferta = function(pet,res){
 
 
 exports.createOferta = function (req, res) {
-  console.log(req.params.id)
-    var oferta = req.body
-    console.log(oferta)
-        knex('ofertas').insert([
-            { titulo: oferta.titulo, 
-              descripcion: oferta.descripcion, 
-              provincia_id: oferta.provincia, 
-              estado: false, 
-              fecha: oferta.fecha, 
-              direccion: oferta.direccion,
-              poblacion: oferta.poblacion,
-              duracion: oferta.duracion,
-              precio: oferta.precio
-            }
-        ]).then(function (id) {
-            var idOferta = id;
-            console.log(idOferta)
-            knex('ofertas_usuarios').insert([
-                {id: id, oferta_id:idOferta, user_id: req.params.id, profesional_id: 0}
-            ]).then(function (id) {
-                res.sendStatus(201);
-                
-                autoseleccionar(idOferta)
-            }).catch(function(error){
-                res.sendStatus(401);
-            })
-        }).catch(function(error){
-            
-            res.sendStatus(401);
-        })
+  
+  var oferta = req.body
+  knex('ofertas').insert([
+      { titulo: oferta.titulo, 
+        descripcion: oferta.descripcion, 
+        provincia_id: oferta.provincia, 
+        estado: false, 
+        fecha: oferta.fecha, 
+        direccion: oferta.direccion,
+        poblacion: oferta.poblacion,
+        duracion: oferta.duracion,
+        precio: oferta.precio
+      }
+  ]).then(function (id) {
+      var idOferta = id;
+      knex('ofertas_usuarios').insert([
+          {id: id, oferta_id:idOferta, user_id: req.params.id, profesional_id: 0}
+      ]).then(function (id) {
+          res.sendStatus(201);
+          
+          autoseleccionar(idOferta)
+      }).catch(function(error){
+          res.sendStatus(404);
+      })
+  }).catch(function(error){
+      
+      res.sendStatus(404);
+  })
     
 }
 
@@ -309,20 +312,11 @@ function autoseleccionar (id){
               horario.comprobarHorario(profesionales[0].id,oferta.fecha,oferta.duracion, function(libre){
                   if(libre == true){
                       notificar(profesionales[0].id,id)
-                      console.log("Solo hay uno")
                   }
               })           
             }else if(profesionales.length > 1){
-              console.log("Filtrando profesionales disponibles")
-              console.log("Estos son los profesionales que hay: ")
-              console.log(profesionales)
               comprobarHorario(profesionales,oferta,function(disponibles){
-                console.log("Estos son los profesionales que tienen el horario libre: ")
-                console.log(disponibles)
                 comprobarDistancia(disponibles,oferta,function(finales){
-                  console.log("Estas son las distancias: ")
-                  console.log(finales)
-
                   let minRepetido = false
                   let min = finales[0]
                   let i = [0]
@@ -338,19 +332,13 @@ function autoseleccionar (id){
                   }
 
                   if(!minRepetido){
-                    console.log("Notificando a :")
-                    console.log(finales[i[0]])
                     notificar(disponibles[i[0]].id,id)
                   }else{
-                    console.log("Distancias repetidas")
                     var repetidos = []
                     for(let k=0;k<i.length;k++){
                       repetidos.push(disponibles[i[k]])
                     }
-                    console.log(repetidos)
                     comprobarValoracion(repetidos,function(valoraciones){
-                      console.log("Comprobando valoracion:")
-                      console.log(valoraciones)
                       let max = valoraciones[0]
                       let m = 0
                       for(let k=1; k<valoraciones.length;k++){
@@ -359,10 +347,6 @@ function autoseleccionar (id){
                               m = k
                           }
                       }
-                      console.log("Valoraciones:")
-                      console.log(valoraciones)
-                      console.log("Notificando a :")
-                      console.log(repetidos[m])
                       notificar(repetidos[m].id,id)
                     })
 
@@ -370,8 +354,6 @@ function autoseleccionar (id){
   
                 })
               })
-            }else{
-                console.log("No hay usuarios")
             }
         }).catch((error) => {});
 
@@ -415,7 +397,6 @@ function comprobarHorario(profesionales,oferta, callback){
         if(libre==true){
           disponibles.push(profesionales[j])
         }
-
         if(j==profesionales.length-1){
           callback(disponibles)
         }
@@ -751,7 +732,7 @@ function notificar(idUsuario, idOferta){
                                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                       <tbody>
                                         <tr>
-                                          <td> <a href="http://localhost:3000/aceptar?id=`+profesional.id+`&of=`+oferta.id+`" target="_blank">Call To Action</a> </td>
+                                          <td> <a href="https://jonaygilabert.ddns.net:3000/aceptar?id=`+profesional.id+`&of=`+oferta.id+`" target="_blank">Visitar oferta</a> </td>
                                         </tr>
                                       </tbody>
                                     </table>
@@ -793,29 +774,29 @@ function notificar(idUsuario, idOferta){
     </html>
     
     `
-            var transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: 'jonaygilabert@gmail.com',
-                    pass: 'jonay2015'
-                }
-            });
-            var mailOptions = {
-                from: 'jonaygilabert@gmail.com',
-                to: profesional.email,
-                subject: 'Notificiación de oferta asignada',
-                html: html
-            };
-            notificacion.notificar(profesional.id,"oferta",oferta.id)
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: EMAIL,
+                pass: PASSWORD
+            }
+        });
+        var mailOptions = {
+            from: EMAIL,
+            to: profesional.email,
+            subject: 'Notificiación de oferta asignada',
+            html: html
+        };
+        notificacion.notificar(profesional.id,"oferta",oferta.id)
 
-            transporter.sendMail(mailOptions, function(error, info){
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log('Email sent: ' + info.response);
-                }
-                });
-            
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+            });
+        
         }).catch((error) => {});
         }
         

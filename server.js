@@ -31,10 +31,13 @@ var notificaciones = require('./notificaciones')
 app.get('/profesionales/:id',auth.middleware,users.getProfesional)
 app.put('/profesionales/:id',auth.middleware,users.updateProfesional)
 app.get('/profesionales/:id/clientes',auth.middleware,users.getHistorialClientes)
-app.get('/profesional/:id/trabajos',auth.middleware,ofertas.getTrabajos)
-app.put('/profesional/:id/trabajos/:idTrabajo',auth.middleware,ofertas.aceptarOferta)
+app.get('/profesionales/:id/trabajos',auth.middleware,ofertas.getTrabajos)
+app.put('/profesionales/:id/trabajos/:idTrabajo',auth.middleware,ofertas.aceptarOferta)
 app.get('/profesionales/:id/trabajos/:idOferta/user',auth.middleware,ofertas.getClienteTrabajo)
 app.put('/profesionales/:id/trabajos/:idOferta/cancelar',auth.middleware,ofertas.cancelarOferta)
+
+app.get('/profesionales/:id/mensajes/:idUser',auth.middleware,users.getMensajesProfesional)
+app.get('/users/:id/mensajes/:idProfesional',auth.middleware,users.getMensajesUser)
 
 app.delete('/profesionales/:id/notificaciones/:idNotificacion',notificaciones.cancelarNotificacion)
 
@@ -55,6 +58,7 @@ app.post('/registro',auth.registrar)
 app.get('/users/:id/ofertas',auth.middleware,ofertas.getOfertas)
 app.get('/users/:id/profesionales',auth.middleware,users.getHistorialProfesionales)
 
+
 app.get('/users/:id/ofertas/:idOferta',auth.middleware,ofertas.getOferta)
 app.put('/users/:id/ofertas/:idOferta',auth.middleware,ofertas.updateOferta)
 app.delete('/users/:id/ofertas/:idOferta',auth.middleware,ofertas.borrarOferta)
@@ -70,8 +74,9 @@ app.get('/provincias/:id',users.getProvincia)
 app.get('/buscador/:idProvincia',auth.middleware,buscador.getOfertasProvincias)
 /*
 https.createServer({
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.cert')
+  key: fs.readFileSync('/etc/letsencrypt/live/jonaygilabert.ddns.net/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/jonaygilabert.ddns.net/cert.pem'),
+  chain: fs.readFileSync('/etc/letsencrypt/live/jonaygilabert.ddns.net/chain.pem')
 }, app)*/
 app.listen(3030, function () {
   console.log('Example app listening on port 3030! Go to https://localhost:3030/')
