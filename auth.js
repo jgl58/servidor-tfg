@@ -80,6 +80,7 @@ function completarLogin(isProfesional,email,pass,res){
                         profesional: true
                     } 
                     var token = jwt.encode(payload,secret);
+                    console.log(token)
                     res.setHeader('Authorization','Bearer',token);
                     res.status(200).send({
                         "token": token,
@@ -178,6 +179,8 @@ exports.registrar = function (req, res) {
     var provincia = req.body.provincia;
     var direccion = req.body.direccion;
     var pais = req.body.pais;
+
+    console.log(req.body)
     existe(isProfesional, email, function (exists) {
         if (!exists) {
             var data = {

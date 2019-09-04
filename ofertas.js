@@ -8,7 +8,7 @@ var notificacion = require('./notificaciones')
 var distance = require('google-distance-matrix');
 distance.key('AIzaSyAYS8EDyWG-GGFK80V2bwJ3atV68WninOI')
 
-var EMAIL = "equipopochinki@gmail.com"
+var EMAIL = "jonaygilabert@gmail.com"
 var PASSWORD = "jonay2015"
 app.use(bp.urlencoded({
     extended: true
@@ -123,9 +123,11 @@ exports.aceptarOferta = function(req,res){
 
     var id = req.params.id
     var idTrabajo = req.params.idTrabajo;
+    console.log(idTrabajo)
     knex('ofertas').where('id',idTrabajo).first()
     .then(function(data){
-        
+          console.log("HOLA")
+          console.log(data)
           horario.comprobarHorario(id,data.fecha,data.duracion,(disponible) => {
             
             if(disponible == true){ 
@@ -144,7 +146,7 @@ exports.aceptarOferta = function(req,res){
                     }
                 })
             }else{
-                res.sendStatus(406)
+                res.sendStatus(404)
             }
           })
           

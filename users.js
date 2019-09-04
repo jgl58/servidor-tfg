@@ -36,15 +36,15 @@ exports.getUser = function (pet, res) {
 exports.getProfesional = function (pet, res) {
 
     var id = pet.params.id
-        knex('profesionales','provincias.provincia').select("profesionales.*").innerJoin('provincias','provincias.id','=','profesionales.provincia').where('profesionales.id', id).first().then(function (data) {
+    knex('profesionales','provincias.provincia').select("profesionales.*").innerJoin('provincias','provincias.id','=','profesionales.provincia').where('profesionales.id', id).first().then(function (data) {
 
-            res.status(200).send({
-                "user": data
-            })
-        }).catch((error) => {
-            res.status(404).send({ userMessage: "Usuario no existente", devMessage: "" })
-        });
-    
+        res.status(200).send({
+            "user": data
+        })
+    }).catch((error) => {
+        res.status(404).send({ userMessage: "Usuario no existente", devMessage: "" })
+    });
+
 
 }
 
