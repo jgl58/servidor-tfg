@@ -156,6 +156,8 @@ exports.aceptarOferta = function(req,res){
     
 }
 
+
+
 exports.cancelarOferta = function(req,res){
 
   var id = req.params.id
@@ -734,7 +736,7 @@ function notificar(idUsuario, idOferta){
                                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                       <tbody>
                                         <tr>
-                                          <td> <a href="https://jonaygilabert.ddns.net:3000/aceptar?id=`+profesional.id+`&of=`+oferta.id+`" target="_blank">Visitar oferta</a> </td>
+                                          <td> <a href="https://jonaygilabert.ddns.net:3030/aceptar/static.html?id=`+profesional.id+`&of=`+oferta.id+`" target="_blank">Visitar oferta</a> </td>
                                         </tr>
                                       </tbody>
                                     </table>

@@ -10,6 +10,7 @@ app.use(cors());
 app.use(bp.urlencoded({
     extended: true
 }));
+app.use(express.static('public'));
 app.use(bp.json());
 var knex = require('knex')({
     client: 'mysql',
@@ -27,6 +28,9 @@ var ofertas = require('./ofertas.js')
 var buscador = require('./buscador.js')
 var horario = require('./horario')
 var notificaciones = require('./notificaciones')
+
+
+app.get("/aceptar",express.static(__dirname + '/aceptar'));
 
 app.get('/profesionales/:id',auth.middleware,users.getProfesional)
 app.put('/profesionales/:id',auth.middleware,users.updateProfesional)
@@ -72,12 +76,15 @@ app.get('/provincias/:id',users.getProvincia)
 
 
 app.get('/buscador/:idProvincia',auth.middleware,buscador.getOfertasProvincias)
-/*
+
+
+
+app.put('/aceptar/:id/trabajos/:idTrabajo',ofertas.aceptarOferta)
+
 https.createServer({
   key: fs.readFileSync('/etc/letsencrypt/live/jonaygilabert.ddns.net/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/jonaygilabert.ddns.net/cert.pem'),
   chain: fs.readFileSync('/etc/letsencrypt/live/jonaygilabert.ddns.net/chain.pem')
-}, app)*/
-app.listen(3030, function () {
+}, app).listen(3030, function () {
   console.log('Example app listening on port 3030! Go to https://localhost:3030/')
 })

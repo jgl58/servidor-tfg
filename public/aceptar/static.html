@@ -1,0 +1,461 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+
+    <!--    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.3/js/mdb.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.3/css/mdb.min.css" rel="stylesheet">-->
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.9/css/mdb.min.css" rel="stylesheet">
+
+    <script src="static.js"></script>
+
+
+
+
+
+
+    <title>TFG</title>
+    <style type="text/css">
+        /* Chart.js */
+        @-webkit-keyframes chartjs-render-animation {
+            from {
+                opacity: 0.99
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes chartjs-render-animation {
+            from {
+                opacity: 0.99
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .chartjs-render-monitor {
+            -webkit-animation: chartjs-render-animation 0.001s;
+            animation: chartjs-render-animation 0.001s;
+        }
+    </style><style type="text/css">
+        .bc-icons.breadcrumb-item::before,
+        .bc-icons.breadcrumb-item::after {
+            content: none;
+        }
+
+        .bc-icons.breadcrumb-item+.active.breadcrumb-item::before,
+        .bc-icons.breadcrumb-item+.active.breadcrumb-item::after {
+            content: none;
+        }
+
+        .bc-icons.breadcrumb-item.active {
+            color: #eeeeee;
+        }
+    </style>
+    <style type="text/css">
+        .Ripple {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            opacity: 1;
+            transform: scale(0);
+        }
+
+        .Ripple-outline {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .Ripple.is-reppling {
+            animation: ripple 0.5s linear;
+        }
+
+        .Ripple-parent {
+            position: relative;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        @keyframes ripple {
+            100% {
+                opacity: 0;
+                transform: scale(3);
+            }
+        }
+    </style>
+    <style type="text/css">
+        .btn-group-vertical>.btn,
+        .btn-group-vertical>.btn+.btn-group,
+        .btn-group-vertical>.btn-group+.btn,
+        .btn-group-vertical>.btn-group+.btn-group {
+            margin-left: 0px;
+        }
+
+        .btn-group-lg>.btn {
+            font-size: 0.9rem;
+            padding: 1rem 2.4rem;
+        }
+
+        .btn-group-sm>.btn {
+            font-size: 0.6rem;
+            padding: 0.5rem 1.6rem;
+        }
+
+        .btn-floating.btn.btn-sm,
+        .btn-floating.btn.btn-lg {
+            padding: 0;
+        }
+    </style>
+    <style type="text/css">
+        .carousel-inner {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-fade .carousel-item {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: block !important;
+            opacity: 0;
+            z-index: 0;
+            transition: transform 0ms ease-in-out, opacity 0.8s ease-out;
+        }
+
+        .carousel-fade .carousel-item.active {
+            position: relative;
+            z-index: 1;
+            opacity: 1;
+        }
+
+        .carousel-multi-item .carousel-item {
+            display: inline-block !important;
+        }
+
+        .carousel .carousel-slide-item {
+            transition: left 0.5s;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next,
+        .carousel-item-prev,
+        .carousel-item-next {
+            z-index: 2;
+        }
+    </style>
+    <style type="text/css">
+        .table-wrapper-scroll-y {
+            display: block;
+            max-height: 200px;
+            overflow-y: auto;
+            -ms-overflow-style: -ms-autohiding-scrollbar;
+        }
+    </style>
+    <style type="text/css">
+        .dropup .dropdown-menu {
+            top: auto !important;
+            bottom: 100% !important;
+            transform: translate3d(5px, 5px, 0px) !important;
+        }
+
+        .dropdown-menu-right {
+            left: 0 !important;
+            right: auto !important;
+        }
+    </style>
+    <style type="text/css">
+        .hamburger-button__checkbox {
+            display: none;
+        }
+
+        .hamburger-button__button {
+            background-color: transparent;
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            cursor: pointer;
+            top: -5px;
+        }
+
+        label.hamburger-button__button {
+            margin-bottom: 0;
+        }
+
+        #nav-icon1 {
+            width: 1.5em;
+            height: 1.5em;
+            position: relative;
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+            -webkit-transition: .5s ease-in-out;
+            -moz-transition: .5s ease-in-out;
+            -o-transition: .5s ease-in-out;
+            transition: .5s ease-in-out;
+            cursor: pointer;
+        }
+
+        #nav-icon1 span {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            border-radius: 1px;
+            background-color: #fff;
+            opacity: 1;
+            left: 0;
+            -webkit-transform: rotate(0deg);
+            -moz-transform: rotate(0deg);
+            -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+            -webkit-transition: .25s ease-in-out;
+            -moz-transition: .25s ease-in-out;
+            -o-transition: .25s ease-in-out;
+            transition: .25s ease-in-out;
+        }
+
+        #nav-icon1 span:nth-child(1) {
+            top: 5px;
+        }
+
+        #nav-icon1 span:nth-child(2) {
+            top: 16px;
+        }
+
+        #nav-icon1 span:nth-child(3) {
+            top: 27px;
+        }
+
+        .hamburger-button__checkbox:checked+#nav-icon1 span:nth-child(1) {
+            top: 16px;
+            -webkit-transform: rotate(135deg);
+            -moz-transform: rotate(135deg);
+            -o-transform: rotate(135deg);
+            transform: rotate(135deg);
+        }
+
+        .hamburger-button__checkbox:checked+#nav-icon1 span:nth-child(2) {
+            opacity: 0;
+            left: -60px;
+        }
+
+        .hamburger-button__checkbox:checked+#nav-icon1 span:nth-child(3) {
+            top: 16px;
+            -webkit-transform: rotate(-135deg);
+            -moz-transform: rotate(-135deg);
+            -o-transform: rotate(-135deg);
+            transform: rotate(-135deg);
+        }
+    </style>
+
+    <style type="text/css">
+        @import url(https://fonts.googleapis.com/css?family=Roboto:100,200,300,400,500);
+    </style>
+    <style type="text/css">
+        :root {
+            --tooltip-backcolor: #424242;
+            --tooltip-forecolor: #FAFAFA;
+        }
+
+        .fab-container {
+            bottom: 10vh;
+            position: fixed;
+            margin: 1em;
+            right: 8vw;
+        }
+
+        .fab-item {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+            border-radius: 50%;
+            border-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 56px;
+            height: 56px;
+            margin: 20px auto 0;
+            position: relative;
+            -webkit-transition: transform .1s ease-out, height 100ms ease, opacity 100ms ease;
+            transition: transform .1s ease-out, height 100ms ease, opacity 100ms ease;
+            text-decoration: none;
+        }
+
+        .fab-item:active,
+        .fab-item:focus,
+        .fab-item:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+            transition: box-shadow .2s ease;
+            outline: none;
+        }
+
+        .fab-item:not(:last-child) {
+            width: 40px;
+            height: 0px;
+            margin: 0px auto 0;
+            opacity: 0;
+            -webkit-transform: translateY(50px);
+            -ms-transform: translateY(50px);
+            transform: translateY(50px);
+        }
+
+        .fab-container:hover .fab-item:not(:last-child) {
+            height: 40px;
+            opacity: 1;
+            -webkit-transform: none;
+            -ms-transform: none;
+            transform: none;
+            margin: 15px auto 0;
+        }
+
+        .fab-item:not(:last-child) i {
+            opacity: 0;
+        }
+
+        .fab-container:hover .fab-item:not(:last-child) i {
+            opacity: 1;
+        }
+
+        .fab-item:nth-last-child(1) {
+            -webkit-transition-delay: 25ms;
+            transition-delay: 25ms;
+            background-size: contain;
+        }
+
+        .fab-item:not(:last-child):nth-last-child(2) {
+            -webkit-transition-delay: 50ms;
+            transition-delay: 20ms;
+            background-size: contain;
+        }
+
+        .fab-item:not(:last-child):nth-last-child(3) {
+            -webkit-transition-delay: 75ms;
+            transition-delay: 40ms;
+            background-size: contain;
+        }
+
+        .fab-item:not(:last-child):nth-last-child(4) {
+            -webkit-transition-delay: 100ms;
+            transition-delay: 60ms;
+            background-size: contain;
+        }
+
+        [tooltip]:before {
+            bottom: 25%;
+            font-family: arial;
+            font-weight: 600;
+            border-radius: 2px;
+            background: var(--tooltip-backcolor);
+            color: var(--tooltip-forecolor);
+            content: attr(tooltip);
+            font-size: 12px;
+            visibility: hidden;
+            opacity: 0;
+            padding: 5px 7px;
+            margin-right: 12px;
+            position: absolute;
+            right: 100%;
+            white-space: nowrap;
+        }
+
+        [tooltip]:hover:before,
+        [tooltip]:hover:after {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity .1s ease-in-out;
+        }
+
+        .fab-item:nth-last-child(1)[tooltip]:hover:before,
+        .fab-item:nth-last-child(1)[tooltip]:hover:after {
+            transition: opacity .1s step-end;
+        }
+
+        .fab-item.fab-rotate:active,
+        .fab-item.fab-rotate:focus,
+        .fab-item.fab-rotate:hover {
+            transform: rotate(45deg);
+            box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.19), 3px 3px 6px rgba(0, 0, 0, 0.23);
+            transition: box-shadow .2s ease, transform .1s ease;
+            outline: none;
+        }
+
+        .fab-item.fab-rotate:nth-last-child(1)[tooltip]:hover:before,
+        .fab-item.fab-rotate:nth-last-child(1)[tooltip]:hover:after {
+            transform: rotate(-45deg);
+            bottom: -60%;
+            right: 60%;
+        }
+    </style>
+    <script src="chrome-extension://mooikfkahbdckldjjndioackbalphokd/assets/prompt.js"></script>
+</head>
+
+<body style="background-color: #c9ddff" onload="onload()">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+        <div class="App">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8 mt-5">
+                        <div class="card">
+                            <div class="card-body float-left">
+                                <h4 class="card-title font-weight-bold" id="titulo"></h4>
+                                <p class="card-text" id="descripcion"></p>
+                                <p class="card-text" id="precio"><b></b></p>
+                                <p class="card-text"id="tiempo"><b></b></p>
+                                <hr class="my-4">
+                                <p class="card-text" id="ubicacion"></p>
+                                <hr class="my-4">
+                                <p class="card-text">
+                                    <div class="chip mr-0" id="fecha"></div>
+                                </p><a class="btn btn-default" onclick="aceptar()">Aceptar oferta</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.9/js/mdb.min.js"></script>
+
+
+</body>
+
+</html>
