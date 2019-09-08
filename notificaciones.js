@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var io = require('socket.io-client');
-var socket = io.connect('http://localhost:4001', {reconnect: true});
+var socket = io.connect('http://jonaygilabert.ddns.net:4001', {reconnect: true});
 
 var bp = require('body-parser');
 app.use(bp.urlencoded({

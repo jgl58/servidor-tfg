@@ -80,11 +80,11 @@ app.get('/buscador/:idProvincia',auth.middleware,buscador.getOfertasProvincias)
 
 
 app.put('/aceptar/:id/trabajos/:idTrabajo',ofertas.aceptarOferta)
-
+/*
 https.createServer({
   key: fs.readFileSync('/etc/letsencrypt/live/jonaygilabert.ddns.net/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/jonaygilabert.ddns.net/cert.pem'),
   chain: fs.readFileSync('/etc/letsencrypt/live/jonaygilabert.ddns.net/chain.pem')
-}, app).listen(3030, function () {
+}, app)*/app.listen(3030, function () {
   console.log('Example app listening on port 3030! Go to https://localhost:3030/')
 })
